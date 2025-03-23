@@ -1,36 +1,33 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# [Crabe](https://crabe.ares.uy)
+
+A fun two-player cooperative web game inspired by the board game "La Marche Du Crabe".
+
+## Architecture
+
+The game consists of: 
+- A [Next.js](https://nextjs.org/) web app that renders the frontend.
+- A [Websocket](https://websockets.spec.whatwg.org/) server that manages room creation for game sessions, game progress and player communications.
+
+## Top level dependencies
+
+- [Node.js](https://nodejs.org)
+- [pnpm](https://pnpm.io)
 
 ## Getting Started
 
-First, run the development server:
+1. Install dependencies `pnpm i`.
+2. Run the Websocket server `pnpm ws-start` so that players can communicate with each other within a room.
+3. Run the development server `pnpm dev`.
+4. Open [http://localhost:3000](http://localhost:3000) with your browser to open the game.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Commands
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The following commands are available once you install [Node.js](https://nodejs.org) & [pnpm](https://pnpm.io):
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- `pnpm i`        - Installs the project's dependencies.
+- `pnpm dev`      - Runs the development server.
+- `pnpm build`    - Builds the project for production.
+- `pnpm compile`  - Checks if the project can be compiled correctly.
+- `pnpm lint`     - Checks for linter errors.
+- `pnpm ws-build` - Builds the Websocket server.
+- `pnpm ws-start` - Runs the Websocket server.
