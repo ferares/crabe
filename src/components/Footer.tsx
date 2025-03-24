@@ -10,7 +10,7 @@ export default function Footer() {
         <span className="footer__text">
           {t("developed-by")}&nbsp;
           <br className="footer__mobile-break" />
-          <a className="footer__link" href="https://github.com/ferares" target="_blank" rel="noreferrer noopener nofollow">Fermín Ares</a>
+          <a className="footer__link" href="https://ares.uy" target="_blank">Fermín Ares</a>
           <br />
           La Paloma, Rocha, Uruguay
         </span>
