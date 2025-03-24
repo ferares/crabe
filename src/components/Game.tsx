@@ -20,6 +20,8 @@ import { type Response } from "@/wsServer"
 import Modal from "./Modal"
 import GameHeader from "./GameHeader"
 import BoardComponent from "./Board"
+import Button from "./Button"
+import AlertComponent from "./Alert"
 
 interface GameComponentProps { code: string }
 
@@ -32,6 +34,7 @@ export default function GameComponent({ code }: GameComponentProps) {
   const [shouldConnect, setShouldConnect] = useState(true)
   const { lastJsonMessage, sendJsonMessage } = useWebSocket(wsURL, wsOptions({ shouldReconnect: () => didUnmount.current === false, onOpen: () => handleReconnect(), onClose: () => handleClose() }), shouldConnect)
   const [board, setBoard] = useState<PlayerBoard>()
+  const [showCopyConfirmation, setShowCopyConfirmation] = useState(false)
   const [waitForPlayer, setWaitForPlayer] = useState(true)
 
   const restartGame = useCallback(() => sendJsonMessage({ action: "restart" }), [sendJsonMessage])
@@ -96,13 +99,15 @@ export default function GameComponent({ code }: GameComponentProps) {
   }, [code, sendJsonMessage, setLoading])
 
   // TODO: Re-enable this
-  // const handleShare = useCallback(async () => {
-  //   if (navigator?.share) {
-  //     await navigator.share({ title: 'Join my game!', text: '', url: window.location.href })
-  //   } else {
-  //     await navigator?.clipboard?.writeText(window.location.href)
-  //   }
-  // }, [])
+  const handleShare = useCallback(async () => {
+    if (navigator?.share) {
+      await navigator.share({ title: 'Join my game!', text: '', url: window.location.href })
+    } else {
+      await navigator?.clipboard?.writeText(window.location.href)
+      setShowCopyConfirmation(true)
+      setTimeout(() => setShowCopyConfirmation(false), 3000)
+    }
+  }, [])
 
   if (!board) return null
 
@@ -114,6 +119,19 @@ export default function GameComponent({ code }: GameComponentProps) {
         <h2 id="share-modal-title" style={{ textAlign: "center" }}>
           {t("Messages.share")}
         </h2>
+        <div className="share__btn-wrapper">
+          <Button onClick={handleShare}>
+            {t("Labels.share")}
+          </Button>
+          <Button href="/">
+            {t("Labels.cancel")}
+          </Button>
+        </div>
+        {showCopyConfirmation && (
+          <AlertComponent type="info" removeAlert={() => setShowCopyConfirmation(false)}>
+            {t("Messages.copied-to-clipboard")}
+          </AlertComponent>
+        )}
       </Modal>
     </>
   )

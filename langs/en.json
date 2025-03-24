@@ -8,7 +8,9 @@
     "change-language": "Change language",
     "home": "Home",
     "developed-by": "Developed by",
-    "open-source": "Open source code at"
+    "open-source": "Open source code at",
+    "share": "Share",
+    "cancel": "Cancel"
   },
   "Messages": {
     "error": "There was an unexpected error. Please try again later",
@@ -30,7 +32,8 @@
     "game-lose": "You Lose! - New Game?",
     "game-win": "You Win! - New Game?",
     "share": "Share the page URL with a friend to start the game",
-    "player-disconnected": "The other player has disconnected! Waiting for them to re-join..."
+    "player-disconnected": "The other player has disconnected! Waiting for them to re-join...",
+    "copied-to-clipboard": "Link copied to the clipboard"
   },
   "Pages": {
     "Home": {

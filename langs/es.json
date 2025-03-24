@@ -8,7 +8,9 @@
     "change-language": "Cambiar idioma",
     "home": "Inicio",
     "developed-by": "Desarrollado por",
-    "open-source": "Código abierto en"
+    "open-source": "Código abierto en",
+    "share": "Compartir",
+    "cancel": "Cancelar"
   },
   "Messages": {
     "error": "Ocurrió un error inesperado. Intenta de nuevo más tarde",
@@ -30,7 +32,8 @@
     "game-lose": "¡Perdiste! - ¿Jugar de nuevo?",
     "game-win": "¡Ganaste! - ¿Jugar de nuevo?",
     "share": "Comparte la URL de la página con un amigo para empezar el juego",
-    "player-disconnected": "El otro jugador perdió la conexión. Esperando que se reconecten..."
+    "player-disconnected": "El otro jugador perdió la conexión. Esperando que se reconecten...",
+    "copied-to-clipboard": "Enlace copiado al portapapeles"
   },
   "Pages":  {
     "Home": {
