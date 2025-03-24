@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl"
 
 import useWebSocket from "react-use-websocket"
 
-import { useRouter } from "@/navigation"
+import { useRouter } from "@/i18n/routing"
 
 import { type PlayerBoard } from "@/types/Board"
 

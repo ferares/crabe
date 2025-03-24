@@ -4,7 +4,7 @@ import { type PropsWithChildren, type ReactNode, useCallback, useEffect, useMemo
 
 import { type RichTranslationValues, useTranslations } from "next-intl"
 
-import { useRouter } from "@/navigation"
+import { useRouter } from "@/i18n/routing"
 
 import { type PlayerBoard } from "@/types/Board"
 
@@ -116,12 +116,12 @@ export default function TutorialComponent() {
           )}
           {(tutorialStep === 5) && (
             <TutorialCard title={t("Pages.Tutorial.t6")} step={tutorialStep}>
-              {t.rich("Pages.Tutorial.m6", { objectIcon: board.cards[0][0].object?.icon, ...translationOptions })}
+              {t.rich("Pages.Tutorial.m6", { objectIcon: board.cards[0][0].object?.icon ?? "", ...translationOptions })}
             </TutorialCard>
           )}
           {(tutorialStep === 6) && (
             <TutorialCard title={t("Pages.Tutorial.t7")} step={tutorialStep}>
-              {t.rich("Pages.Tutorial.m7", { objectIcon: board.cards[0][0].object?.icon, shrimpIcon, playersIcon, ...translationOptions })}
+              {t.rich("Pages.Tutorial.m7", { objectIcon: board.cards[0][0].object?.icon ?? "", shrimpIcon, playersIcon, ...translationOptions })}
               {contiuneBtn()}
             </TutorialCard>
           )}
@@ -139,7 +139,7 @@ export default function TutorialComponent() {
           )}
           {(tutorialStep === 10) && (
             <TutorialCard title={t("Pages.Tutorial.t10")} step={tutorialStep}>
-              {t.rich("Pages.Tutorial.m10", { objectIcon: board.cards[0][5].object?.icon, objectRevealedIcon, ...translationOptions })}
+              {t.rich("Pages.Tutorial.m10", { objectIcon: board.cards[0][5].object?.icon ?? "", objectRevealedIcon, ...translationOptions })}
               {contiuneBtn()}
             </TutorialCard>
           )}

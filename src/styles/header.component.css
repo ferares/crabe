@@ -1,35 +1,176 @@
-/*main header*/
-.main-header{ position: relative; width: 100%; height: 70px; background: #fbeee0; z-index: 99; box-shadow: 0 0 10px rgba(0,0,0,0.1); flex-shrink: 0; }
-.main-header .content{ display: flex; justify-content: space-between; height: 100%; }
+.main-header {
+  background: #fbeee0;
+  box-shadow: 0 0 10px rgba(0 0 0 / 10%);
+  flex-shrink: 0;
+  height: 70px;
+  position: relative;
+  width: 100%;
+  z-index: 99;
+}
 
-.main-header .main-nav{ display: flex; width: 100%; }
-.main-header .main-nav .main-nav-home-link { display: flex; align-items: center; text-decoration: none; font-size: 2rem; }
+.main-header .content {
+  display: flex;
+  height: 100%;
+  justify-content: space-between;
+}
 
-.main-header .menu-toggle { display: none; }
+.main-header .main-nav {
+  display: flex;
+  width: 100%;
+}
 
-.main-header .main-nav .menu-content{ margin-left: 50px; }
-.main-header .main-nav .menu-content li{ display: inline-block; margin: 0 15px; }
-.main-header .main-nav .menu-content li a{ text-decoration: none; font-weight: 600; color: #000; display: block; padding: 0; line-height: 69px; font-family: var(--font-poppins); transition: all .3s; font-size: .9em; position: relative; }
+.main-header .main-nav .main-nav-home-link {
+  align-items: center;
+  display: flex;
+  font-size: 2rem;
+  text-decoration: none;
+}
+
+.main-header .menu-toggle {
+  display: none;
+}
+
+.main-header .main-nav .menu-content {
+  margin-left: 50px;
+}
+
+.main-header .main-nav .menu-content li {
+  display: inline-block;
+  margin: 0 15px;
+}
+
+.main-header .main-nav .menu-content li a {
+  color: #000;
+  display: block;
+  font-family: var(--font-poppins);
+  font-size: .9em;
+  font-weight: 600;
+  line-height: 69px;
+  padding: 0;
+  position: relative;
+  text-decoration: none;
+  transition: all .3s;
+}
+
 .main-header .main-nav .menu-content li a:hover,
-.main-header .main-nav .menu-content li a.active{ color: #145da0; }
+.main-header .main-nav .menu-content li a.active {
+  color: #145da0;
+}
 
-.main-header .main-nav .menu-content li a:after{ content: ""; width: 0; height: 2px; display: block; background: #145da0; transition: all .3s; position: absolute; bottom: -1px; left: 0; }
-.main-header .main-nav .menu-content li a:hover:after{ content: ""; width: 100%; height: 4px; display: block; background: #145da0; }
-.main-header .main-nav .menu-content li a.active:after{ content: ""; width: 100%; height: 4px; display: block; background: #145da0; }
+.main-header .main-nav .menu-content li a::after {
+  background: #145da0;
+  bottom: -1px;
+  content: "";
+  display: block;
+  height: 2px;
+  left: 0;
+  position: absolute;
+  transition: all .3s;
+  width: 0;
+}
 
-.main-header .right-options { display: flex; height: 100%; align-items: center; margin-left: auto; }
+.main-header .main-nav .menu-content li a:hover::after {
+  background: #145da0;
+  content: "";
+  display: block;
+  height: 4px;
+  width: 100%;
+}
 
-.main-header .right-options .language-button{ border: none; position: relative; width: 40px; height: 40px; padding: 0; margin-left: 5px; border-radius: 5px; transition: all .3s; padding: 0; display: flex; align-items: center; justify-content: center; }
-.main-header .right-options .language-button img{ width: 25px; height: 25px; }
-.main-header .right-options .language-button:hover{ background: #EEE; }
+.main-header .main-nav .menu-content li a.active::after {
+  background: #145da0;
+  content: "";
+  display: block;
+  height: 4px;
+  width: 100%;
+}
 
-.main-header .right-options #dropdown-lang figure{ position: relative; width: 25px; height: 25px; margin: 0;}
-.main-header .right-options #dropdown-lang img{ width: 100%; height: 100%; }
+.main-header .right-options {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  margin-left: auto;
+}
 
-.main-header .right-options #dropdown-lang{ width: 145px; left: auto; right: 0; top: 60px; padding-bottom: 5px; }
-.main-header .right-options #dropdown-lang ul{ margin: 0; padding: 0; }
-.main-header .right-options #dropdown-lang li{ margin-bottom: 5px; }
-.main-header .right-options #dropdown-lang li button{ justify-content: center; text-decoration: none; color: #000; font-weight: 500; font-size: .9em; display: flex; width: 100%; align-items: center; height: 35px; border-radius: 5px; transition: all .3s; padding: 0 5px; gap: .5rem; }
-.main-header .right-options #dropdown-lang li button:hover{ background: #EEE; }
-.main-header .right-options #dropdown-lang li button figure{ border-radius: 4px; overflow: hidden; display: inline-block; position: relative; }
-.main-header .right-options #dropdown-lang li button figure img{ width: 100%; }
+.main-header .right-options .language-button {
+  align-items: center;
+  border: none;
+  border-radius: 5px;
+  display: flex;
+  height: 40px;
+  justify-content: center;
+  margin-left: 5px;
+  padding: 0;
+  position: relative;
+  transition: all .3s;
+  width: 40px;
+}
+
+.main-header .right-options .language-button img {
+  height: 25px;
+  width: 25px;
+}
+
+.main-header .right-options .language-button:hover {
+  background: #EEE;
+}
+
+.main-header .right-options #dropdown-lang figure {
+  height: 25px;
+  margin: 0;
+  position: relative;
+  width: 25px;
+}
+
+.main-header .right-options #dropdown-lang img {
+  height: 100%;
+  width: 100%;
+}
+
+.main-header .right-options #dropdown-lang {
+  left: auto;
+  padding-bottom: 5px;
+  right: 0;
+  top: 60px;
+  width: 145px;
+}
+
+.main-header .right-options #dropdown-lang ul {
+  margin: 0;
+  padding: 0;
+}
+
+.main-header .right-options #dropdown-lang li {
+  margin-bottom: 5px;
+}
+
+.main-header .right-options #dropdown-lang li button {
+  align-items: center;
+  border-radius: 5px;
+  color: #000;
+  display: flex;
+  font-size: .9em;
+  font-weight: 500;
+  gap: .5rem;
+  height: 35px;
+  justify-content: center;
+  padding: 0 5px;
+  text-decoration: none;
+  transition: all .3s;
+  width: 100%;
+}
+
+.main-header .right-options #dropdown-lang li button:hover {
+  background: #EEE;
+}
+
+.main-header .right-options #dropdown-lang li button figure {
+  border-radius: 4px;
+  display: inline-block;
+  overflow: hidden;
+  position: relative;
+}
+
+.main-header .right-options #dropdown-lang li button figure img {
+  width: 100%;
+}

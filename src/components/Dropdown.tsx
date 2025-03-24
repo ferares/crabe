@@ -4,7 +4,7 @@ import { type ComponentProps, type RefObject, useCallback, useEffect, useRef } f
 
 export interface DropdownProps extends Omit<ComponentProps<"div">, "className"> {
   open: boolean
-  togglerRef: RefObject<HTMLElement>,
+  togglerRef: RefObject<HTMLElement | null>,
   onOpen?: () => void
   onClose?: () => void
 }

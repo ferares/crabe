@@ -6,7 +6,9 @@
     "continue": "Continuar",
     "finish-tutorial": "Terminar tutorial",
     "change-language": "Cambiar idioma",
-    "home": "Inicio"
+    "home": "Inicio",
+    "developed-by": "Desarrollado por",
+    "open-source": "Código abierto en"
   },
   "Messages": {
     "error": "Ocurrió un error inesperado. Intenta de nuevo más tarde",
@@ -31,6 +33,9 @@
     "player-disconnected": "El otro jugador perdió la conexión. Esperando que se reconecten..."
   },
   "Pages":  {
+    "Home": {
+      "title": "Juego basado en \"La Marche du Crabe\""
+    },
     "Tutorial": {
       "t1": "¡Bienvenido al tutorial!",
       "m1": "<p>¡Únete a tu compañero y rescata a 8 cangrejos atrapados en objetos dispersos por la playa {objectRevealedIcon}.</p><p>¡Pero cuidado! en 4 de estos objetos esonden enemigos {enemyIcon}. ¡Uy!</p><p>Por suerte, cada uno de ustedes conocerá 2 de ellos. ¿El truco? ¡Los cangrejos no hablan! Así que tendrás que ser creativo y usar tus acciones para señalar qué objetos son peligrosos.</p>",

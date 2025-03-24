@@ -1,14 +1,82 @@
-.dropdown-menu-wrapper{ position: relative; }
-.dropdown-menu{ overflow-y: auto; overflow-x: hidden; position: absolute; width: 100%; top: 0; left: 0; background: #FFF; max-height: 0; opacity: 0; visibility: hidden; box-shadow: 0 0 6px rgba(0,0,0,0.2); border-radius: 10px; padding: 10px 5px; top: 50px; z-index: 1; }
-.dropdown-menu.show{ visibility: visible; opacity: 1; max-height: 200px; }
-.dropdown-menu li{ padding: 0; text-align: left; background: transparent; border-radius: 5px; display: block; width: 100%; font-size: .9em; margin-bottom: 2px; transition: background-color .3s; }
-.dropdown-menu li button.active{ background: #f1f2f6; }
-.dropdown-menu li b{ font-weight: bold; }
-.dropdown-menu li:hover,
-.dropdown-menu li button:focus{ background: #EEE; border-radius: 5px; }
-.dropdown-menu li button{ border: none; padding: 0; text-align: left; display: block; width: 100%; padding: 8px 10px; transition: background-color .3s; overflow: hidden; text-overflow: ellipsis; }
+.dropdown-menu-wrapper {
+  position: relative;
+}
 
-.dropdown-menu::-webkit-scrollbar{ width: 4px; height: 4px; }
-.dropdown-menu::-webkit-scrollbar-track{ background-color: transparent; }
-.dropdown-menu::-webkit-scrollbar-thumb{ background-color: #CCC; border: none; border-radius: 5px; }
-.dropdown-menu::-webkit-scrollbar-thumb:hover{ background-color: #CCC; }
+.dropdown-menu {
+  background: #FFF;
+  border-radius: 10px;
+  box-shadow: 0 0 6px rgba(0 0 0 / 20%);
+  left: 0;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden auto;
+  padding: 10px 5px;
+  position: absolute;
+  top: 50px;
+  visibility: hidden;
+  width: 100%;
+  z-index: 1;
+}
+
+.dropdown-menu.show {
+  max-height: 200px;
+  opacity: 1;
+  visibility: visible;
+}
+
+.dropdown-menu li {
+  background: transparent;
+  border-radius: 5px;
+  display: block;
+  font-size: .9em;
+  margin-bottom: 2px;
+  padding: 0;
+  text-align: left;
+  transition: background-color .3s;
+  width: 100%;
+}
+
+.dropdown-menu li button.active {
+  background: #f1f2f6;
+}
+
+.dropdown-menu li b {
+  font-weight: bold;
+}
+
+.dropdown-menu li button {
+  border: none;
+  display: block;
+  overflow: hidden;
+  padding: 8px 10px;
+  text-align: left;
+  text-overflow: ellipsis;
+  transition: background-color .3s;
+  width: 100%;
+}
+
+.dropdown-menu li:hover,
+.dropdown-menu li button:focus {
+  background: #EEE;
+  border-radius: 5px;
+}
+
+
+.dropdown-menu::-webkit-scrollbar {
+  height: 4px;
+  width: 4px;
+}
+
+.dropdown-menu::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb {
+  background-color: #CCC;
+  border: none;
+  border-radius: 5px;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb:hover {
+  background-color: #CCC;
+}

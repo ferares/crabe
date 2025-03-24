@@ -4,9 +4,9 @@ import { startTransition, useCallback, useEffect, useRef, useState } from "react
 
 import { useTranslations } from "next-intl"
 
-import { useRouter } from "@/navigation"
-
 import useWebSocket from "react-use-websocket"
+
+import { useRouter } from "@/i18n/routing"
 
 import { wsOptions, wsURL } from "@/helpers/websockets"
 
@@ -37,7 +37,7 @@ export default function NewGameBtn() {
     if (msg.type === "create") {
       setLoading(true)
       startTransition(() => {
-        router.push({ pathname: "/[code]", params: { code: msg.code } })
+        router.push({ pathname: `/${msg.code}` })
         setLoading(false)
       })
     } else if (msg.type === "error") {

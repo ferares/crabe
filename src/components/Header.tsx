@@ -4,7 +4,7 @@ import { Suspense } from "react"
 
 import { useTranslations } from "next-intl"
 
-import { Link } from "@/navigation"
+import { Link } from "@/i18n/routing"
 
 import { playersIcon } from "@/helpers/game"
 

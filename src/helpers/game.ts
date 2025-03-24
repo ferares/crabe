@@ -143,7 +143,7 @@ export function generateBoard(): Board | undefined {
   const playersPos: Position = { column: 0, row: 5 }
   const barcoEnemies = generateEnemies("barco")
   const solEnemies = generateEnemies("sol", barcoEnemies)
-  const enemies: { [player in Player]: Enemy[] } = { barco: barcoEnemies, sol: solEnemies }
+  const enemies: Record<Player, Enemy[]> = { barco: barcoEnemies, sol: solEnemies }
   const enemiesIndexes = generateHiddenEnemiesIndexes()
   let objectIconIndex: keyof typeof shuffledObjectIcons = 0
   for (let row = 0; row < 6; row++) {

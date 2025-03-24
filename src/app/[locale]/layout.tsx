@@ -4,9 +4,9 @@ import type { Metadata } from "next"
 import { Caveat, Fuzzy_Bubbles } from 'next/font/google'
 
 import { NextIntlClientProvider } from "next-intl"
-import { getMessages, unstable_setRequestLocale } from "next-intl/server"
+import { getMessages, setRequestLocale } from "next-intl/server"
 
-import { type LocaleOption } from "@/i18nConfig"
+import { type LocaleOption } from "@/i18n/routing"
 
 import { AlertsProvider } from "@/context/Alerts"
 import { LoaderProvider } from "@/context/Loader"
@@ -22,10 +22,11 @@ export const metadata: Metadata = {
   robots: { follow: false, index: false },
 }
 
-interface RootLayoutProps { params: { locale: LocaleOption }, children: React.ReactNode }
+interface RootLayoutProps { params: Promise<{ locale: LocaleOption }>, children: React.ReactNode }
 
-export default async function RootLayout({ children, params: { locale } }: RootLayoutProps) {
-  unstable_setRequestLocale(locale)
+export default async function RootLayout({ children, params }: RootLayoutProps) {
+  const { locale } = await params
+  setRequestLocale(locale)
   const messages = await getMessages()
   return (
     <html lang={locale} className={`${caveat.variable} ${fuzzyBubbles.variable}`}>

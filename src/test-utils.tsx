@@ -4,7 +4,7 @@ import { vi } from "vitest"
 
 import { configureAxe } from "vitest-axe"
 
-import { defaultLocale, type LocaleOption } from "./i18nConfig"
+import { defaultLocale, type LocaleOption } from "./i18n/routing"
 
 import defaultMessages from '../langs/es.json'
 

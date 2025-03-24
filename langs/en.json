@@ -6,7 +6,9 @@
     "continue": "Continue",
     "finish-tutorial": "Finish tutorial",
     "change-language": "Change language",
-    "home": "Home"
+    "home": "Home",
+    "developed-by": "Developed by",
+    "open-source": "Open source code at"
   },
   "Messages": {
     "error": "There was an unexpected error. Please try again later",
@@ -31,6 +33,9 @@
     "player-disconnected": "The other player has disconnected! Waiting for them to re-join..."
   },
   "Pages": {
+    "Home": {
+      "title": "Game based on \"La Marche du Crabe\""
+    },
     "Tutorial": {
       "t1": "Welcome to the tutorial!",
       "m1": "<p>Team up with your friend and rescue 8 fellow crabs {objectRevealedIcon} trapped in objects scattered around the beach.</p><p>But watch out! 4 of these objects are hiding some sneaky enemies {enemyIcon}. Yikes!</p><p>Luckily, you'll each know the location of 2 of these danger objects. The catch? Crabs don't chat! So, you'll have to get creative and use your actions to signal which objects are a no-go.</p>",

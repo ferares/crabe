@@ -15,6 +15,7 @@ type Room = { code: string, board: Board, players: Map<Player, WebSocket>, new: 
 const rooms: Record<string, Room> = {}
 
 function decodeMessage(data: RawData): Message {
+  // eslint-disable-next-line @typescript-eslint/no-base-to-string
   return JSON.parse(String(data)) as Message
 }
 

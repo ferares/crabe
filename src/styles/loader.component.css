@@ -1,17 +1,72 @@
-.loader{ position: fixed;  display: flex; align-items: center; flex-direction: column; justify-content: center; background: rgba(0,0,0,0.6); top: 0; left: 0; z-index: 999999; width: 100dvw; height: 100dvh; transition: all .3s; visibility: hidden; transition: all .3s; }
+.loader {
+  align-items: center;
+  background: rgba(0 0 0  / 60%);
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  justify-content: center;
+  left: 0;
+  position: fixed;
+  top: 0;
+  transition: all .3s;
+  visibility: hidden;
+  width: 100dvw;
+  z-index: 999999;
+}
 
-.loader.active{ opacity: 1; visibility: visible; }
-.loader span{ display: inline-block; }
+.loader.active {
+  opacity: 1;
+  visibility: visible;
+}
 
-.loader-message { display: block; color: #fff; margin-bottom: 10px; text-align: center; }
+.loader span {
+  display: inline-block;
+}
 
-.spinner{ position: relative; width: 54px; height: 54px; }
-.spinner div{ box-sizing: border-box; display: block; position: absolute; width: 44px; height: 44px; margin: 4px; border: 3px solid #fff; border-radius: 50%; animation: spinner 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite; border-color: #FFF transparent transparent transparent; }
-.spinner div:nth-child(1){ animation-delay: -0.45s; }
-.spinner div:nth-child(2){ animation-delay: -0.3s; }
-.spinner div:nth-child(3){ animation-delay: -0.15s; }
+.loader-message  {
+  color: #fff;
+  display: block;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.spinner {
+  height: 54px;
+  position: relative;
+  width: 54px;
+}
+
+.spinner div {
+  animation: spinner 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border: 3px solid #fff;
+  border-color: #FFF transparent transparent;
+  border-radius: 50%;
+  box-sizing: border-box;
+  display: block;
+  height: 44px;
+  margin: 4px;
+  position: absolute;
+  width: 44px;
+}
+
+.spinner div:nth-child(1) {
+animation-delay: -0.45s;
+}
+
+.spinner div:nth-child(2) {
+animation-delay: -0.3s;
+}
+
+.spinner div:nth-child(3) {
+animation-delay: -0.15s;
+}
 
 @keyframes spinner {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }

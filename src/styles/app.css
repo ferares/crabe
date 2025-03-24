@@ -1,65 +1,10 @@
-:root {
-  --content-width: 1300px;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  background-color: wheat;
-  font-family: var(--font-fuzzy-bubbles), Arial, Helvetica, sans-serif;
-  margin: 0;
-  font-size: 1.2rem;
-  height: 100dvh;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-caveat), Arial, Helvetica, sans-serif;
-}
-
-.content{ width: 100%; padding: 0 1rem; max-width: 1160px; margin: 0 auto; position: relative; flex-grow: 1; }
-
-.main-content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  padding: 0 1rem;
-  margin: 2rem 0;
-  flex-grow: 1;
-}
-
-.home-title {
-  text-align: center;
-  margin-top: 0;
-  font-size: 3rem;
-}
-
-.home-actions {
-  display: grid;
-  gap: 1rem;
-  margin: 0 auto;
-  max-width: 600px;
-}
-
-.new-game {
-  align-items: center;
-  display: flex;
-  height: 100%;
-  justify-content: center;
-  width: 100%;
-}
-
-@import "./dropdown.component.css";
-@import "./header.component.css";
-@import "./footer.component.css";
-@import "./button.component.css";
-@import "./board.component.css";
-@import "./loader.component.css";
-@import "./alert.component.css";
-@import "./modals.component.css";
-@import "./tutorial.component.css";
+@import url("./base.css");
+@import url("./dropdown.component.css");
+@import url("./header.component.css");
+@import url("./footer.component.css");
+@import url("./button.component.css");
+@import url("./board.component.css");
+@import url("./loader.component.css");
+@import url("./alert.component.css");
+@import url("./modals.component.css");
+@import url("./tutorial.component.css");
