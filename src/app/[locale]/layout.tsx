@@ -20,6 +20,7 @@ const fuzzyBubbles = Fuzzy_Bubbles({ subsets: ['latin'], weight: ["400"], displa
 export const metadata: Metadata = {
   title: "La Marche du Crabe",
   robots: { follow: false, index: false },
+  authors: [{ name: "Ares Software", url: "https://ares.uy" }],
 }
 
 interface RootLayoutProps { params: Promise<{ locale: LocaleOption }>, children: React.ReactNode }
