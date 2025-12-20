@@ -77,9 +77,9 @@ export default function BoardComponent({ board, onGameRestart, onDrawCard, onPla
         })}
       </ol>
       <ol className={`enemy-rows ${currentEnemy?.row === 5 ? "enemy-rows--top" : ""}`}>
-        {[0,1,2,3,4,5].map((row) => (
+        {[0, 1, 2, 3, 4, 5].map((row) => (
           <li key={row}>
-            {currentEnemy && currentEnemy.row === row && (
+            {currentEnemy?.row === row && (
               <span className={`card btn btn--enemy card--enemy-${currentEnemy.player} card--disabled`} title={t("Messages.place-enemy")}>
                 <EnemyComponent enemy={currentEnemy} />
               </span>
@@ -116,7 +116,7 @@ export default function BoardComponent({ board, onGameRestart, onDrawCard, onPla
             </div>
           )}
         </div>
-        )}
+      )}
     </div>
   )
 }

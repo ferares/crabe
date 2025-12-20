@@ -8,7 +8,7 @@ import useWebSocket from "react-use-websocket"
 
 import { useRouter } from "@/i18n/routing"
 
-import { wsOptions, wsURL } from "@/helpers/websockets"
+import { wsURL } from "@/helpers/websockets"
 
 import { useLoaderContext } from "@/context/Loader"
 import { useAlertsContext } from "@/context/Alerts"
@@ -24,7 +24,25 @@ export default function NewGameBtn() {
   const { pushAlert } = useAlertsContext()
   const didUnmount = useRef(false)
   const [shouldConnect, setShouldConnect] = useState(true)
-  const { lastJsonMessage, sendJsonMessage } = useWebSocket(wsURL, wsOptions({ shouldReconnect: () => didUnmount.current === false, onClose: () => handleClose(), onOpen: () => handleOpen() }), shouldConnect)
+
+  const handleOpen = useCallback(() => setLoading(false), [setLoading])
+
+  // shouldConnect to false on ws close
+  const handleClose = useCallback(() => {
+    if (didUnmount.current) return
+    setLoading(true, t("Messages.connection-lost"))
+    setShouldConnect(false)
+  }, [setLoading, setShouldConnect, t])
+
+  const { lastJsonMessage, sendJsonMessage } = useWebSocket(
+    wsURL,
+    {
+      shouldReconnect: () => !didUnmount.current,
+      onClose: handleClose,
+      onOpen: handleOpen
+    },
+    shouldConnect
+  )
 
   useEffect(() => {
     didUnmount.current = false
@@ -46,18 +64,9 @@ export default function NewGameBtn() {
     }
   }, [lastJsonMessage, router, setLoading, pushAlert, t])
 
-  const handleOpen = useCallback(() => setLoading(false), [setLoading])
-
-  // shouldConnect to false on ws close
-  function handleClose() {
-    if (didUnmount.current) return
-    setLoading(true, t("Messages.connection-lost"))
-    setShouldConnect(false)
-  }
-
   // Try to reconnect the ws every 1 second
   useEffect(() => { if (!shouldConnect) setTimeout(() => setShouldConnect(true), 1000) }, [shouldConnect])
-  
+
   const newGame = useCallback(() => sendJsonMessage({ action: "create" }), [sendJsonMessage])
 
   return (

@@ -1,6 +1,6 @@
 "use client"
 
-import { type PropsWithChildren, type ReactNode, useCallback, useEffect, useMemo, useState } from "react"
+import { type PropsWithChildren, type ReactNode, useCallback, useMemo, useState } from "react"
 
 import { type RichTranslationValues, useTranslations } from "next-intl"
 
@@ -22,53 +22,58 @@ export default function TutorialComponent() {
   const [tutorialStep, setTutorialStep] = useState(0)
   const [playerBoard, setPlayerBoard] = useState<PlayerBoard>(getPlayerBoardData("barco", 2, false, board))
 
-  useEffect(() => {
-    if (tutorialStep === 7) {
+  // Handle tutorial step transitions that need to manipulate the board
+  const advanceToStep = useCallback((nextStep: number) => {
+    if (nextStep === 7) {
       drawEnemy(board)
       setPlayerBoard(getPlayerBoardData("barco", 2, false, board))
-    } else if (tutorialStep === 8) {
+    } else if (nextStep === 8) {
       placeEnemy(4, 0, board)
       setPlayerBoard(getPlayerBoardData("barco", 2, false, board))
-    } else if (tutorialStep === 9) {
+    } else if (nextStep === 9) {
       movePlayer(0, 5, board)
       setPlayerBoard(getPlayerBoardData("barco", 2, false, board))
-      setTutorialStep((current) => current + 1)
-    } else if (tutorialStep === 13) {
+      // Auto-advance to step 10
+      setTutorialStep(10)
+      return
+    } else if (nextStep === 13) {
       router.push("/")
+      return
     }
-  }, [tutorialStep, board, router])
+    setTutorialStep(nextStep)
+  }, [board, router])
 
   function onDrawCard() {
     if (tutorialStep !== 2) return
     drawEnemy(board)
     setPlayerBoard(getPlayerBoardData("barco", 2, false, board))
-    setTutorialStep((current) => current + 1)
+    advanceToStep(3)
   }
-  
+
   function onPlaceEnemy(row: number, column: number) {
     if (tutorialStep !== 3) return
     placeEnemy(row, column, board)
     setPlayerBoard(getPlayerBoardData("barco", 2, false, board))
-    setTutorialStep((current) => current + 1)
+    advanceToStep(4)
   }
-  
+
   function onMovePlayers(row: number, column: number) {
     if ((tutorialStep !== 5) || (row !== 0) || (column !== 0)) return
     movePlayer(0, 0, board)
     setPlayerBoard(getPlayerBoardData("barco", 2, false, board))
-    setTutorialStep((current) => current + 1)
+    advanceToStep(6)
   }
 
   const contiuneBtn = useCallback((label = t("Labels.continue")) => (
     <div className="tutorial-btn-wrapper">
-      <Button onClick={() => setTutorialStep((current) => current + 1)}>
+      <Button onClick={() => advanceToStep(tutorialStep + 1)}>
         {label}
       </Button>
     </div>
-  ), [t])
+  ), [t, tutorialStep, advanceToStep])
 
   const translationOptions: RichTranslationValues = useMemo(() => ({ p: (chunks: ReactNode) => <p>{chunks}</p> }), [])
-  
+
   return (
     <>
       <GameHeader board={playerBoard} />

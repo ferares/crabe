@@ -6,8 +6,6 @@ import { Caveat, Fuzzy_Bubbles } from 'next/font/google'
 import { NextIntlClientProvider } from "next-intl"
 import { getMessages, setRequestLocale } from "next-intl/server"
 
-import { type LocaleOption } from "@/i18n/routing"
-
 import { AlertsProvider } from "@/context/Alerts"
 import { LoaderProvider } from "@/context/Loader"
 
@@ -23,7 +21,7 @@ export const metadata: Metadata = {
   authors: [{ name: "Ares Software", url: "https://ares.uy" }],
 }
 
-interface RootLayoutProps { params: Promise<{ locale: LocaleOption }>, children: React.ReactNode }
+interface RootLayoutProps { params: Promise<{ locale: string }>, children: React.ReactNode }
 
 export default async function RootLayout({ children, params }: RootLayoutProps) {
   const { locale } = await params

@@ -10,7 +10,7 @@ import { useRouter } from "@/i18n/routing"
 
 import { type PlayerBoard } from "@/types/Board"
 
-import { wsOptions, wsURL } from "@/helpers/websockets"
+import { wsURL } from "@/helpers/websockets"
 
 import { useLoaderContext } from "@/context/Loader"
 import { useAlertsContext } from "@/context/Alerts"
@@ -32,10 +32,65 @@ export default function GameComponent({ code }: GameComponentProps) {
   const { setLoading } = useLoaderContext()
   const { pushAlert } = useAlertsContext()
   const [shouldConnect, setShouldConnect] = useState(true)
-  const { lastJsonMessage, sendJsonMessage } = useWebSocket(wsURL, wsOptions({ shouldReconnect: () => didUnmount.current === false, onOpen: () => handleReconnect(), onClose: () => handleClose() }), shouldConnect)
+
   const [board, setBoard] = useState<PlayerBoard>()
   const [showCopyConfirmation, setShowCopyConfirmation] = useState(false)
   const [waitForPlayer, setWaitForPlayer] = useState(true)
+
+  // Handle WebSocket messages with a callback that's passed to the hook
+  const handleMessage = useCallback((message: Response) => {
+    if ((message.type === "join") || (message.type === "update")) {
+      setBoard(message.board)
+      if ((!message.board.new) && (message.board.connectedPlayers < 2)) {
+        setLoading(true, t("Messages.player-disconnected"))
+      } else {
+        setLoading(false)
+      }
+      setWaitForPlayer(message.board.new ?? false)
+    } else if (message.type === "start") {
+      setWaitForPlayer(false)
+    } else if (message.type === "error") {
+      console.error(message.text)
+      if (message.code === 500) {
+        pushAlert("danger", t("Messages.error"))
+      } else {
+        if (message.code === 404) {
+          pushAlert("danger", t("Messages.game-not-found"))
+        } else if (message.code === 409) {
+          pushAlert("danger", t("Messages.game-full"))
+        }
+        startTransition(() => router.push("/"))
+      }
+    }
+  }, [router, pushAlert, setLoading, t])
+
+  // shouldConnect to false on ws close
+  const handleClose = useCallback(() => {
+    if (didUnmount.current) return
+    setLoading(true, t("Messages.connection-lost"))
+    setShouldConnect(false)
+  }, [setLoading, t])
+
+  const { sendJsonMessage } = useWebSocket(
+    wsURL,
+    {
+      shouldReconnect: () => !didUnmount.current,
+      onOpen: () => {
+        setLoading(false)
+        sendJsonMessage({ action: "join", code })
+      },
+      onClose: handleClose,
+      onMessage: (event: MessageEvent) => {
+        try {
+          const message = JSON.parse(event.data as string) as Response
+          handleMessage(message)
+        } catch (error) {
+          console.error("Failed to parse WebSocket message:", error)
+        }
+      }
+    },
+    shouldConnect
+  )
 
   const restartGame = useCallback(() => sendJsonMessage({ action: "restart" }), [sendJsonMessage])
 
@@ -51,54 +106,12 @@ export default function GameComponent({ code }: GameComponentProps) {
     return () => { didUnmount.current = true }
   }, [setLoading])
 
-  useEffect(() => {
-    if (!lastJsonMessage) return
-    const msg = lastJsonMessage as Response
-    if ((msg.type === "join") || (msg.type === "update")) {
-      setBoard(msg.board)
-      if ((!msg.board.new) && (msg.board.connectedPlayers < 2)) {
-        setLoading(true, t("Messages.player-disconnected"))
-      } else {
-        setLoading(false)
-      }
-      setWaitForPlayer(msg.board.new ?? false)
-    } else if (msg.type === "start") {
-      setWaitForPlayer(false)
-    } else if (msg.type === "error") {
-      console.error(msg.text)
-      if (msg.code === 500) {
-        pushAlert("danger", t("Messages.error"))
-      } else {
-        if (msg.code === 404) {
-          pushAlert("danger", t("Messages.game-not-found"))
-        } else if (msg.code === 409) {
-          pushAlert("danger", t("Messages.game-full"))
-        }
-        startTransition(() => router.push("/"))
-      }
-    }
-  }, [lastJsonMessage, router, pushAlert, setLoading, t])
-
   // Join the room if the board hasn't been setup yet
   useEffect(() => { if (!board) sendJsonMessage({ action: "join", code }) }, [code, sendJsonMessage, board])
-
-  // shouldConnect to false on ws close
-  function handleClose() {
-    if (didUnmount.current) return
-    setLoading(true, t("Messages.connection-lost"))
-    setShouldConnect(false)
-  }
 
   // Try to reconnect the ws every 1 second
   useEffect(() => { if (!shouldConnect) setTimeout(() => setShouldConnect(true), 1000) }, [shouldConnect])
 
-  // On reconnect re-join the room
-  const handleReconnect = useCallback(() => {
-    setLoading(false)
-    sendJsonMessage({ action: "join", code })
-  }, [code, sendJsonMessage, setLoading])
-
-  // TODO: Re-enable this
   const handleShare = useCallback(async () => {
     if (navigator?.share) {
       await navigator.share({ title: 'Join my game!', text: '', url: window.location.href })
