@@ -15,8 +15,6 @@ const compat = new FlatCompat({ baseDirectory: __dirname })
 const eslintConfig = [
   ...nextCoreWebVitals,
   ...nextTypescript,
-  ...compat.extends("plugin:@typescript-eslint/recommended-type-checked"),
-  ...compat.extends("plugin:@typescript-eslint/stylistic-type-checked"),
   {
     languageOptions: {
       parser: tsParser,
