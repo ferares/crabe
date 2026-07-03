@@ -23,7 +23,7 @@ export class Alerts extends HTMLElement {
           alertElement.remove()
           resolve()
         }, { once: true })
-        alertElement.classList.add("hide")
+        alertElement.classList.add("dismissed")
       }
       alertElement.querySelector<HTMLButtonElement>("[data-js=close]")!
         .addEventListener("click", dismiss, { once: true })

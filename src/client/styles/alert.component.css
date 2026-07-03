@@ -21,7 +21,7 @@
   z-index: 100000;
 }
 
-.alert.hide {
+.alert.dismissed {
   animation: slide-out 500ms;
   opacity: 0;
   visibility: hidden;
