@@ -61,15 +61,15 @@
 }
 
 .alert.alert-info {
-  border-color: #0077ed;
+  border-color: var(--color-info);
 }
 
 .alert.alert-danger {
-  border-color: #f0192a;
+  border-color: var(--color-danger);
 }
 
 .alert.alert-success {
-  border-color: #3bae59;
+  border-color: var(--color-success);
 }
 
 @keyframes slide-in {

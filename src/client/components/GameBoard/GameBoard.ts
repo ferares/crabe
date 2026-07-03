@@ -64,7 +64,7 @@ export class GameBoard extends HTMLElement {
       const item = document.createElement("li")
       item.title = this.t("Messages.object-enemy")
       const cardElement = document.createElement("span")
-      cardElement.classList.add("card", "btn", "card--disabled", `card--enemy-${card.object?.enemy?.player}`)
+      cardElement.classList.add("card", "btn", "card--disabled", `card--enemy-${card.object?.enemy?.player}`, "card--object")
       cardElement.appendChild(this.createObject(card.object!))
       item.appendChild(cardElement)
       this.objectsElement.appendChild(item)
@@ -110,7 +110,7 @@ export class GameBoard extends HTMLElement {
       }
     }
     const hasPlayer = playersPos.column === column && playersPos.row === row
-    const hasEnemy = !!(card.enemy?.player ?? (card.object?.revealed && card.object?.enemy?.player))
+    const enemyPlayer = card.enemy?.player ?? (card.object?.revealed && card.object?.enemy?.player)
     const clickHandler = this.generateClickHandler(board, row, column, card)
     const cardElement = document.createElement("button")
     cardElement.type = "button"
@@ -118,7 +118,7 @@ export class GameBoard extends HTMLElement {
     cardElement.classList.toggle("card--active", isActive)
     cardElement.classList.toggle("card--disabled", !clickHandler)
     cardElement.classList.toggle("card--player", hasPlayer)
-    cardElement.classList.toggle("card--enemy", hasEnemy)
+    cardElement.classList.toggle(`card--enemy-${enemyPlayer}`, !!enemyPlayer)
     cardElement.classList.toggle("card--object", !!card.object)
     cardElement.classList.toggle("card--object-revealed", !!card.object?.revealed)
     if (clickHandler) cardElement.addEventListener("click", clickHandler)

@@ -1,5 +1,5 @@
 .main-header {
-  background: #fbeee0;
+  background: var(--color-header);
   box-shadow: 0 0 10px rgba(0 0 0 / 10%);
   flex-shrink: 0;
   height: 70px;
@@ -43,13 +43,13 @@
   color: #000;
   display: block;
   font-family: var(--font-poppins);
-  font-size: .9em;
+  font-size: 0.9em;
   font-weight: 600;
   line-height: 69px;
   padding: 0;
   position: relative;
   text-decoration: none;
-  transition: all .3s;
+  transition: all 0.3s;
 }
 
 .main-header .main-nav .menu-content li a:hover,
@@ -65,7 +65,7 @@
   height: 2px;
   left: 0;
   position: absolute;
-  transition: all .3s;
+  transition: all 0.3s;
   width: 0;
 }
 
@@ -102,7 +102,7 @@
   margin-left: 5px;
   padding: 0;
   position: relative;
-  transition: all .3s;
+  transition: all 0.3s;
   width: 40px;
 }
 
@@ -112,7 +112,7 @@
 }
 
 .main-header .right-options .language-button:hover {
-  background: #EEE;
+  background: #eee;
 }
 
 .main-header .right-options #dropdown-lang figure {
@@ -149,19 +149,19 @@
   border-radius: 5px;
   color: #000;
   display: flex;
-  font-size: .9em;
+  font-size: 0.9em;
   font-weight: 500;
-  gap: .5rem;
+  gap: 0.5rem;
   height: 35px;
   justify-content: center;
   padding: 0 5px;
   text-decoration: none;
-  transition: all .3s;
+  transition: all 0.3s;
   width: 100%;
 }
 
 .main-header .right-options #dropdown-lang li button:hover {
-  background: #EEE;
+  background: #eee;
 }
 
 .main-header .right-options #dropdown-lang li button figure {

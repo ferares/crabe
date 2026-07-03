@@ -7,7 +7,7 @@
 }
 
 body {
-  background-color: wheat;
+  background-color: var(--color-bg);
   display: flex;
   flex-direction: column;
   font-family: var(--font-fuzzy-bubbles), Arial, Helvetica, sans-serif;
@@ -17,7 +17,12 @@ body {
   padding: 0;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-caveat), Arial, Helvetica, sans-serif;
 }
 

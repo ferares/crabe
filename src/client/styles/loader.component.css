@@ -1,6 +1,6 @@
 .loader {
   align-items: center;
-  background: rgba(0 0 0  / 60%);
+  background: rgba(0 0 0 / 60%);
   display: flex;
   flex-direction: column;
   height: 100dvh;
@@ -8,7 +8,7 @@
   left: 0;
   position: fixed;
   top: 0;
-  transition: all .3s;
+  transition: all 0.3s;
   visibility: hidden;
   width: 100dvw;
   z-index: 999999;
@@ -23,7 +23,7 @@
   display: inline-block;
 }
 
-.loader-message  {
+.loader-message {
   color: #fff;
   display: block;
   margin-bottom: 10px;
@@ -39,7 +39,7 @@
 .spinner div {
   animation: spinner 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
   border: 3px solid #fff;
-  border-color: #FFF transparent transparent;
+  border-color: #fff transparent transparent;
   border-radius: 50%;
   box-sizing: border-box;
   display: block;
@@ -50,15 +50,15 @@
 }
 
 .spinner div:nth-child(1) {
-animation-delay: -0.45s;
+  animation-delay: -0.45s;
 }
 
 .spinner div:nth-child(2) {
-animation-delay: -0.3s;
+  animation-delay: -0.3s;
 }
 
 .spinner div:nth-child(3) {
-animation-delay: -0.15s;
+  animation-delay: -0.15s;
 }
 
 @keyframes spinner {
