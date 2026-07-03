@@ -35,6 +35,8 @@
   background: #fff;
   border-radius: 10px;
   box-shadow: 0 0 6px rgba(0 0 0 / 20%);
+  display: grid;
+  gap: 1rem;
   height: auto;
   max-height: 90dvh;
   max-width: 1024px;

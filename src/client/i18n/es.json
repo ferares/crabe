@@ -9,6 +9,7 @@
     "home": "Inicio",
     "developed-by": "Desarrollado por",
     "open-source": "Código abierto en",
+    "new-game": "Juego nuevo",
     "share": "Compartir",
     "cancel": "Cancelar"
   },
@@ -28,11 +29,11 @@
     "remaining-enemy-cards": "Cartas de enemigo restantes",
     "object-enemy": "Objetos con enemigos",
     "place-enemy": "Coloca al enemigo en esta fila",
-    "new-game": "Juego nuevo",
     "game-lose": "¡Perdiste! - ¿Jugar de nuevo?",
     "game-win": "¡Ganaste! - ¿Jugar de nuevo?",
     "share": "Comparte la URL de la página con un amigo para empezar el juego",
-    "player-disconnected": "El otro jugador perdió la conexión. Esperando que se reconecten...",
+    "player-disconnected": "¡El otro jugador perdió la conexión!",
+    "wait-or-cancel": "Puedes esperar a que se reconecten o cancelar e iniciar un nuevo juego.<br />También puedes volver a compartirles la URL.",
     "join-my-game": "¡Únete a mi juego!",
     "copied-to-clipboard": "Enlace copiado al portapapeles"
   },

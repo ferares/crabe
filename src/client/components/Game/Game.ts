@@ -25,7 +25,7 @@ export class Game extends HTMLElement {
     this.board = this.querySelector("crabe-game-board")!
     this.header = this.querySelector("crabe-game-header")!
     this.shareGameModal = this.querySelector("#share-game-modal")!
-    this.shareGameButton = this.querySelector("[data-js=share]")!
+    this.shareGameButton = this.shareGameModal.querySelector("[data-js=share]")!
   }
 
   connectedCallback() {
@@ -53,8 +53,9 @@ export class Game extends HTMLElement {
       this.header.update(response.board)
       this.shareGameModal.toggle(response.board.new)
       if (!response.board.new && response.board.connectedPlayers < 2) {
-        window.Crabe.setLoading(true, this.t("Messages.player-disconnected"))
-        // TODO: Cancel button
+        this.shareGameModal.setTitle(this.t("Messages.player-disconnected"))
+        this.shareGameModal.setContent(this.t("Messages.wait-or-cancel"))
+        this.shareGameModal.open()
       } else {
         window.Crabe.setLoading(false)
       }
@@ -80,7 +81,7 @@ export class Game extends HTMLElement {
       await navigator.share({ title: this.t("Messages.join-my-game"), text: "", url: window.location.href })
     } else {
       await navigator.clipboard.writeText(window.location.href)
-      this.shareGameModal.pushAlert({ type: "info", content: this.t("Messages.copied-to-clipboard"), })
+      this.shareGameModal.pushAlert({ type: "info", content: this.t("Messages.copied-to-clipboard"), timeout: 5000 })
     }
   }
 

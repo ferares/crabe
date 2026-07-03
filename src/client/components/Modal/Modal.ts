@@ -54,15 +54,21 @@ export class Modal extends HTMLElement {
   };
 
   /**
-   * Sets the modal's body content and optionally renders a title heading.
-   * The generated title is linked to the dialog via `aria-labelledby`.
+   * Sets the modal's body content.
    *
    * @param content - HTML string to inject into the modal body.
-   * @param title - Optional title.
    */
-  setContent = (content: string, title?: string) => {
+  setContent = (content: string) => {
     this.body.innerHTML = content;
-    this.titleElement.textContent = title ?? "";
+  };
+
+  /**
+   * Sets the modal's title heading.
+   *
+   * @param title - Title.
+   */
+  setTitle = (title: string) => {
+    this.titleElement.textContent = title;
   };
 
   pushAlert = (alert: Alert) => {

@@ -16,7 +16,7 @@ const t = useTranslations(Astro.currentLocale as Locale);
     <span slot="title">
       {t("Messages.share")}
     </span>
-    <div class="share__btn-wrapper">
+    <div class="share__btn-wrapper" slot="footer">
       <button class="btn" type="button" data-js="share">
         {t("Labels.share")}
       </button>
