@@ -40,7 +40,7 @@ export class Tutorial extends HTMLElement {
     this.boardElement.update(getPlayerBoardData("barco", 2, false, this.board))
     this.modalButton.addEventListener("click", () => this.nextStep())
     this.cardButton.addEventListener("click", () => this.nextStep())
-    this.boardElement.updateForbiddenObjects(getPlayerBoardData("barco", 2, false, this.board))
+    this.boardElement.update(getPlayerBoardData("barco", 2, false, this.board))
     this.header.update(getPlayerBoardData("barco", 2, false, this.board))
     this.nextStep()
   }

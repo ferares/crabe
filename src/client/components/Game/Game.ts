@@ -52,9 +52,6 @@ export class Game extends HTMLElement {
       this.board.update(response.board)
       this.header.update(response.board)
       this.shareGameModal.toggle(response.board.new)
-      if (response.type === "join") {
-        this.board.updateForbiddenObjects(response.board)
-      }
       if (!response.board.new && response.board.connectedPlayers < 2) {
         window.Crabe.setLoading(true, this.t("Messages.player-disconnected"))
         // TODO: Cancel button

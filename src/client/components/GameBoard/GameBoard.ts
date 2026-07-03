@@ -34,7 +34,7 @@ export class GameBoard extends HTMLElement {
   }
 
   update = (board: PlayerBoard) => {
-    const { cards, turn, gameState, character, currentEnemy } = board
+    const { cards, turn, gameState, character, currentEnemy, forbiddenObjects } = board
 
     // Display restart prompt when game finishes
     if (["lost", "win"].includes(gameState)) {
@@ -55,6 +55,19 @@ export class GameBoard extends HTMLElement {
         const cardElement = this.createCard(board, rowIndex, cardIndex, card)
         this.boardElement.appendChild(cardElement)
       }
+    }
+
+    // Update forbidden objects
+    this.objectsElement.textContent = ""
+    for (const position of forbiddenObjects) {
+      const card = cards[position.row][position.column]
+      const item = document.createElement("li")
+      item.title = this.t("Messages.object-enemy")
+      const cardElement = document.createElement("span")
+      cardElement.classList.add("card", "btn", "card--disabled", `card--enemy-${card.object?.enemy?.player}`)
+      cardElement.appendChild(this.createObject(card.object!))
+      item.appendChild(cardElement)
+      this.objectsElement.appendChild(item)
     }
 
     // Update enemy placement rows
@@ -81,20 +94,6 @@ export class GameBoard extends HTMLElement {
       button.innerHTML = `<span>${enemyIcons.lobster}</span><span>${enemyIcons.octopus}</span>`
       item.appendChild(button)
       this.enemiesElement.appendChild(item)
-    }
-  }
-
-  updateForbiddenObjects = (board: PlayerBoard) => {
-    const { forbiddenObjects, cards } = board
-    for (const position of forbiddenObjects) {
-      const card = cards[position.row][position.column]
-      const item = document.createElement("li")
-      item.title = this.t("Messages.object-enemy")
-      const cardElement = document.createElement("span")
-      cardElement.classList.add("card", "btn", "card--disabled", `card--enemy-${card.object?.enemy?.player}`)
-      cardElement.appendChild(this.createObject(card.object!))
-      item.appendChild(cardElement)
-      this.objectsElement.appendChild(item)
     }
   }
 
