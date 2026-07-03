@@ -1,0 +1,31 @@
+---
+import NewGameButton from "../../components/NewGameButton/NewGameButton.astro";
+import { locales, type Locale } from "../../i18n/config";
+import { getLocalizedPath, useTranslations } from "../../i18n/utils";
+
+import Layout from "../../layouts/Layout.astro";
+
+export function getStaticPaths() {
+  return locales.flatMap((lang) => ({
+    params: { lang },
+  }));
+}
+
+const t = useTranslations(Astro.currentLocale as Locale);
+---
+
+<Layout>
+  <main class="main-content">
+    <section class="intro">
+      <h1 class="home-title">
+        {t("Pages.Home.title")}
+      </h1>
+      <div class="home-actions">
+        <NewGameButton />
+        <a class="btn" href={getLocalizedPath("tutorial", Astro.currentLocale)}>
+          {t("Labels.tutorial")}
+        </a>
+      </div>
+    </section>
+  </main>
+</Layout>

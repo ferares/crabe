@@ -1,8 +1,5 @@
 blockExoticSubdeps: true
 minimumReleaseAge: 10080
-minimumReleaseAgeExclude:
 allowBuilds:
-  "@parcel/watcher": true
-  "@swc/core": true
+  esbuild: true
   sharp: true
-  unrs-resolver: true

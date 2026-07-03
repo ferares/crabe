@@ -1,0 +1,19 @@
+---
+import { locales } from "../../i18n/config";
+
+import Layout from "../../layouts/Layout.astro";
+
+import TutorialComponent from "../../components/Tutorial/Tutorial.astro";
+
+export function getStaticPaths() {
+  return locales.flatMap((lang) => ({
+    params: { lang },
+  }));
+}
+---
+
+<Layout>
+  <main class="content">
+    <TutorialComponent />
+  </main>
+</Layout>

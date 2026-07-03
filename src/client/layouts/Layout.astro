@@ -1,0 +1,107 @@
+---
+import { Font } from "astro:assets";
+
+import { defaultLocale, locales, type Locale } from "../i18n/config";
+import {
+  getLocalizedPath,
+  getRouteKeyFromPath,
+  useTranslations,
+} from "../i18n/utils";
+
+import "../styles/app.css";
+
+import { playersIcon } from "../../helpers/game";
+
+import LangMenu from "../components/LangMenu/LangMenu.astro";
+import Alerts from "../components/Alerts/Alerts.astro";
+import Loader from "../components/Loader/Loader.astro";
+
+const currentPath = Astro.url.pathname;
+const currentPageKey = getRouteKeyFromPath(Astro.url.pathname);
+
+const t = useTranslations(Astro.currentLocale as Locale);
+---
+
+<html lang={Astro.currentLocale}>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="author" href="https://ares.uy" />
+    <meta name="author" content="Ares Software" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>La Marche du Crabe</title>
+    <Font cssVariable="--font-caveat" preload />
+    <Font cssVariable="--font-fuzzy-bubbles" preload />
+    <link rel="canonical" href={new URL(currentPath, Astro.site)} />
+    {
+      locales
+        .filter((locale) => locale !== Astro.currentLocale)
+        .map((locale) => (
+          <link
+            rel="alternate"
+            hreflang={locale}
+            href={new URL(getLocalizedPath(currentPageKey, locale), Astro.site)}
+          />
+        ))
+    }
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href={new URL(
+        getLocalizedPath(currentPageKey, defaultLocale),
+        Astro.site,
+      )}
+    />
+    <script is:inline define:vars={{ currentLocale: Astro.currentLocale }}>
+      window.Astro = { currentLocale };
+    </script>
+    <script src="../scripts/main.ts"></script>
+  </head>
+  <body>
+    <header class="main-header">
+      <div class="content">
+        <nav class="main-nav" role="navigation">
+          <a
+            class="main-nav-home-link"
+            href={getLocalizedPath("home", Astro.currentLocale)}
+            title={t("Labels.home")}
+          >
+            {playersIcon}
+          </a>
+          <div class="right-options">
+            <LangMenu />
+          </div>
+        </nav>
+      </div>
+    </header>
+    <slot />
+    <footer class="footer">
+      <div class="content">
+        <span class="footer__text">
+          {t("Labels.developed-by")}&nbsp;
+          <br class="footer__mobile-break" />
+          <a class="footer__link" href="https://ares.uy" target="_blank">
+            Fermín Ares
+          </a>
+          <br />
+          La Paloma, Rocha, Uruguay
+        </span>
+        <span class="footer__text">
+          {t("Labels.open-source")}&nbsp;
+          <a
+            class="footer__link"
+            href="https://github.com/ferares/marche-du-crabe"
+            target="_blank"
+            rel="noopener nofollow noreferrer"
+          >
+            GitHub
+          </a>
+        </span>
+      </div>
+    </footer>
+    <Alerts id="main-alerts" />
+    <Loader />
+  </body>
+</html>

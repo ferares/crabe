@@ -1,0 +1,10 @@
+---
+interface Props {
+  id?: string;
+}
+const { id } = Astro.props;
+---
+
+<crabe-dropdown id={id} class="dropdown-menu" aria-hidden="true">
+  <slot />
+</crabe-dropdown>

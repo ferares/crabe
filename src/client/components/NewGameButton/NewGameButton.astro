@@ -1,0 +1,12 @@
+---
+import type { Locale } from "../../i18n/config";
+import { useTranslations } from "../../i18n/utils";
+
+const t = useTranslations(Astro.currentLocale as Locale);
+---
+
+<crabe-new-game-button>
+  <button type="button" class="btn" data-js="button">
+    {t("Messages.new-game")}
+  </button>
+</crabe-new-game-button>

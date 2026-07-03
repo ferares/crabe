@@ -1,0 +1,35 @@
+---
+import type { Locale } from "../../i18n/config";
+import { useTranslations } from "../../i18n/utils";
+
+import GameBoard from "../GameBoard/GameBoard.astro";
+import GameHeader from "../GameHeader/GameHeader.astro";
+import Modal from "../Modal/Modal.astro";
+
+const t = useTranslations(Astro.currentLocale as Locale);
+---
+
+<crabe-tutorial>
+  <GameHeader />
+  <div class="tutorial-wrapper">
+    <div class="tutorial-container">
+      <GameBoard />
+      <div class="tutorial-card" data-step="" role="dialog" data-js="card">
+        <div class="tutorial-card-header">
+          <h4 class="tutorial-card-title" data-js="card-title"></h4>
+        </div>
+        <div class="tutorial-card-content" data-js="card-content"></div>
+        <div class="tutorial-btn-wrapper">
+          <button type="button" class="btn hide" data-js="card-button">
+            {t("Labels.continue")}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <Modal id="tutorial-modal" closeable={false}>
+    <div slot="footer" class="tutorial-btn-wrapper">
+      <button type="button" data-js="modal-button" class="btn"></button>
+    </div>
+  </Modal>
+</crabe-tutorial>

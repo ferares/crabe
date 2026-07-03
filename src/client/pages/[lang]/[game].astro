@@ -1,0 +1,19 @@
+---
+import { paths } from "../../i18n/config";
+
+import Layout from "../../layouts/Layout.astro";
+
+import GameComponent from "../../components/Game/Game.astro";
+
+export function getStaticPaths() {
+  return Object.entries(paths).flatMap(([lang, { game }]) => ({
+    params: { lang, game },
+  }));
+}
+---
+
+<Layout>
+  <main class="content">
+    <GameComponent />
+  </main>
+</Layout>

@@ -1,27 +1,21 @@
 {
   "compilerOptions": {
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "target": "es2022",
-    "allowJs": true,
+    "target": "es2015",
     "resolveJsonModule": true,
-    "moduleDetection": "force",
-    "isolatedModules": true,
     "strict": false,
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
-    "module": "NodeNext",
-    "outDir": "./dist",
+    "module": "node16",
+    "moduleResolution": "node16",
+    "outDir": "./dist/server",
     "noEmit": false,
-    "lib": [
-      "es2022"
-    ],
     "rootDir": "./src"
   },
   "include": [
-    "./src/wsServer.ts"
+    "./src/server/start.ts"
   ],
   "exclude": [
+    "./src/client",
     "node_modules"
   ]
 }

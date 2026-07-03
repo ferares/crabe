@@ -1,0 +1,42 @@
+---
+import type { Locale } from "../../i18n/config";
+import { useTranslations } from "../../i18n/utils";
+
+import {
+  enemyIcons,
+  forbiddenObjectsIcon,
+  objectRevealedIcon,
+  shrimpIcon,
+} from "../../../helpers/game";
+
+const t = useTranslations(Astro.currentLocale as Locale);
+---
+
+<crabe-game-header>
+  <header class="game-header">
+    <h2 class="turn-title" role="status" data-js="title"></h2>
+    <span class="counts">
+      <span class="count" title={t("Messages.freed-crabs")}>
+        {objectRevealedIcon} x <span data-js="freed"></span>
+      </span>
+      <span class="count" title={t("Messages.remaining-shrimps")}>
+        {shrimpIcon} x <span data-js="shrimps"></span>
+      </span>
+      <span class="count" title={t("Messages.remaining-enemy-cards")}>
+        <span>
+          <span>
+            {enemyIcons.lobster}
+          </span>
+          <span>
+            {enemyIcons.octopus}
+          </span>
+        </span>
+        x
+        <span data-js="enemies"></span>
+      </span>
+      <span class="counts counts--objects" title={t("Messages.object-enemy")}>
+        {forbiddenObjectsIcon} = <span data-js="objects"></span>
+      </span>
+    </span>
+  </header>
+</crabe-game-header>

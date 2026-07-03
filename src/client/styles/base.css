@@ -1,0 +1,73 @@
+:root {
+  --content-width: 1300px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: wheat;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-fuzzy-bubbles), Arial, Helvetica, sans-serif;
+  font-size: 1.2rem;
+  height: 100dvh;
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-caveat), Arial, Helvetica, sans-serif;
+}
+
+.content {
+  flex-grow: 1;
+  margin: 0 auto;
+  max-width: 1160px;
+  padding: 0 1rem;
+  position: relative;
+  width: 100%;
+}
+
+.main-content {
+  align-items: center;
+  display: flex;
+  flex-grow: 1;
+  height: 100%;
+  justify-content: center;
+  margin: 2rem 0;
+  padding: 0 1rem;
+}
+
+.home-title {
+  font-size: 3rem;
+  margin-top: 0;
+  text-align: center;
+}
+
+.home-actions {
+  display: grid;
+  gap: 1rem;
+  margin: 0 auto;
+  max-width: 600px;
+}
+
+.home-actions .btn {
+  width: 100%;
+}
+
+.new-game {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  width: 100%;
+}
+
+.share__btn-wrapper {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}

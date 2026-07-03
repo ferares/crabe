@@ -1,14 +1,12 @@
 # [Crabe](https://crabe.ares.uy)
 
-A fun two-player cooperative web game inspired by the board game "La Marche Du Crabe".
+A fun two-player cooperative online web game inspired by the board game "La Marche Du Crabe".
 
 ## Architecture
 
-The game consists of: 
-- A [Next.js](https://nextjs.org/) web app that renders the frontend.
-- A [Websocket](https://websockets.spec.whatwg.org/) server that manages room creation for game sessions, game progress and player communications.
+Built with [Astro](https://astro.build), native [WebComponents](https://developer.mozilla.org/en-US/docs/Web/API/Web_components), and a [WebSocket](https://websockets.spec.whatwg.org/) server responsible for room management, game state synchronization, and player communication.
 
-## Top level dependencies
+## System dependencies
 
 - [Node.js](https://nodejs.org)
 - [pnpm](https://pnpm.io)
@@ -16,18 +14,35 @@ The game consists of:
 ## Getting Started
 
 1. Install dependencies `pnpm i`.
-2. Run the Websocket server `pnpm ws-start` so that players can communicate with each other within a room.
-3. Run the development server `pnpm dev`.
-4. Open [http://localhost:3000](http://localhost:3000) with your browser to open the game.
+2. Run the development server + the WebSocket game server `pnpm dev`.
+3. Open [http://localhost:4321](http://localhost:4321) on your browser.
+
+## Production
+
+This project consists of:
+
+- A static Astro client
+- A Node.js WebSocket server
+
+Build both applications:
+
+Create a copy of `.env.development` and name it `.env.production` replacing variable values where needed.
+
+- pnpm build
+- pnpm ws-build
+
+Then:
+
+- Serve the generated static client at `dist/client`
+- Run the WebSocket server with: `pnpm ws-start`
 
 ## Commands
 
-The following commands are available once you install [Node.js](https://nodejs.org) & [pnpm](https://pnpm.io):
+The following commands are available once you install Node.js & pnpm:
 
-- `pnpm i`        - Installs the project's dependencies.
-- `pnpm dev`      - Runs the development server.
-- `pnpm build`    - Builds the project for production.
-- `pnpm compile`  - Checks if the project can be compiled correctly.
-- `pnpm lint`     - Checks for linter errors.
-- `pnpm ws-build` - Builds the Websocket server.
-- `pnpm ws-start` - Runs the Websocket server.
+- `pnpm dev` - Runs the development server.
+- `pnpm build` - Builds the project for production.
+- `pnpm preview` - Previews the production build.
+- `pnpm astro` - Run Astro commands.
+- `pnpm ws-build` - Builds the WebSocket server.
+- `pnpm ws-start` - Runs the WebSocket server.

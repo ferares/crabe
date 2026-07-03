@@ -1,5 +1,3 @@
-import { type Viewport } from "next"
-
 import { shuffle } from "./array"
 
 import { type Board, type PlayerBoard } from "../types/Board"
@@ -9,7 +7,7 @@ import { type Player } from "../types/Player"
 import { type Position } from "../types/Position"
 import { type GameState } from "../types/GameState"
 
-export const viewport: Viewport = { width: 1024, viewportFit: "contain" }
+export const viewport = { width: 1024, viewportFit: "contain" }
 export const forbiddenObjectsIcon = "☠️"
 export const objectRevealedIcon = "🐚"
 export const playersIcon = "🦀"
@@ -149,7 +147,7 @@ export function generateBoard(): Board | undefined {
   for (let row = 0; row < 6; row++) {
     const excludeColumns: number[] = []
     const objectsCountColumns = getObjectsCountColumns(cards)
-    objectsCountColumns.forEach((count, index) => (count >= 2) ? excludeColumns.push(index) : null )
+    objectsCountColumns.forEach((count, index) => (count >= 2) ? excludeColumns.push(index) : null)
     const object1Column = getRandom(0, 5, excludeColumns)
     if ((row === 4) && (objectsCountColumns.filter((count) => count === 1).length === 2) && (objectsCountColumns[object1Column] === 1)) {
       excludeColumns.push(objectsCountColumns.findIndex((count, index) => (count === 1 && index !== object1Column)))

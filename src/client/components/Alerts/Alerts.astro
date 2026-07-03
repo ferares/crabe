@@ -1,0 +1,29 @@
+---
+import { useTranslations } from "../../i18n/utils";
+import type { Locale } from "../../i18n/config";
+
+interface Props {
+  id?: string;
+}
+
+const { id } = Astro.props;
+const t = useTranslations(Astro.currentLocale as Locale);
+---
+
+<crabe-alerts id={id}>
+  <template data-js="template">
+    <div class="alert" role="alert" aria-atomic="true">
+      <div class="alert-content">
+        <button
+          type="button"
+          class="close btn-close"
+          title={t("Labels.close")}
+          data-js="close"
+        >
+          X
+        </button>
+        <div data-js="content"></div>
+      </div>
+    </div>
+  </template>
+</crabe-alerts>

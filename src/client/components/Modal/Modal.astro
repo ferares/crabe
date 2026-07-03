@@ -1,0 +1,45 @@
+---
+import { useTranslations } from "../../i18n/utils";
+import type { Locale } from "../../i18n/config";
+
+import Alerts from "../Alerts/Alerts.astro";
+
+interface Props {
+  id: string;
+  closeable?: boolean;
+}
+
+const { id, closeable } = Astro.props;
+const t = useTranslations(Astro.currentLocale as Locale);
+---
+
+<crabe-modal id={id} data-closeable={closeable}>
+  <dialog data-js="dialog" class="modal" aria-labelledby={`${id}-title`}>
+    <div class="modal-content" data-js="content">
+      <div class="modal-header">
+        <h2 id={`${id}-title`} class="modal-title" data-js="title">
+          <slot name="title" />
+        </h2>
+        {
+          closeable && (
+            <button
+              type="button"
+              class="modal-close"
+              aria-label={t("Labels.close")}
+              data-js="close"
+            >
+              X
+            </button>
+          )
+        }
+      </div>
+      <div class="modal-body" data-js="body">
+        <slot />
+      </div>
+      <div class="modal-footer" data-js="footer">
+        <slot name="footer" />
+      </div>
+    </div>
+    <Alerts id={`${id}-alerts`} />
+  </dialog>
+</crabe-modal>

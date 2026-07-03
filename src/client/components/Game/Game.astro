@@ -1,0 +1,28 @@
+---
+import type { Locale } from "../../i18n/config";
+import { getLocalizedPath, useTranslations } from "../../i18n/utils";
+
+import GameBoard from "../GameBoard/GameBoard.astro";
+import GameHeader from "../GameHeader/GameHeader.astro";
+import Modal from "../Modal/Modal.astro";
+
+const t = useTranslations(Astro.currentLocale as Locale);
+---
+
+<crabe-game>
+  <GameHeader />
+  <GameBoard />
+  <Modal id="share-game-modal" closeable={false}>
+    <span slot="title">
+      {t("Messages.share")}
+    </span>
+    <div class="share__btn-wrapper">
+      <button class="btn" type="button" data-js="share">
+        {t("Labels.share")}
+      </button>
+      <a class="btn" href={getLocalizedPath("home", Astro.currentLocale)}>
+        {t("Labels.cancel")}
+      </a>
+    </div>
+  </Modal>
+</crabe-game>
