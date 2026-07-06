@@ -1,6 +1,13 @@
 ---
+import type { Locale } from "../../i18n/config";
+import { useTranslations } from "../../i18n/utils";
+
+import Modal from "../Modal/Modal.astro";
+
 const rows = [0, 1, 2, 3, 4, 5];
 const columns = [0, 1, 2, 3, 4, 5];
+
+const t = useTranslations(Astro.currentLocale as Locale);
 ---
 
 <crabe-game-board class="loading">
@@ -18,10 +25,12 @@ const columns = [0, 1, 2, 3, 4, 5];
       }
     </ol>
     <ol class="enemy-rows" data-js="enemies"></ol>
-    <div class="game-actions" data-js="actions">
-      <div class="new-game">
-        <button type="button" class="btn" data-js="restart"></button>
+    <Modal id="game-actions">
+      <div slot="footer" class="game-actions-footer">
+        <button type="button" class="btn" data-js="restart">
+          {t("Messages.game-again")}
+        </button>
       </div>
-    </div>
+    </Modal>
   </div>
 </crabe-game-board>

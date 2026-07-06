@@ -151,26 +151,6 @@ crabe-game-board.loading {
   padding-left: 0;
 }
 
-.game-actions {
-  display: none;
-  inset: 0;
-  position: absolute;
-  text-align: center;
-  z-index: 999;
-}
-
-.game-actions.show {
-  display: block;
-}
-
-.game-actions .btn {
-  box-shadow: 4px 8px 8px 0 rgba(0 0 0 / 20%);
-}
-
-.game-actions .btn:hover {
-  box-shadow: 8px 16px 16px 0 rgba(0 0 0 / 20%);
-}
-
 .players {
   border: 2px solid black;
   border-radius: 50%;
@@ -200,6 +180,15 @@ crabe-game-board.loading {
 .players--sol {
   background-color: var(--color-sol);
   transform: rotate(90deg);
+}
+
+#game-actions {
+  text-align: center;
+}
+
+.game-actions-footer {
+  display: flex;
+  justify-content: center;
 }
 
 @keyframes pulse {

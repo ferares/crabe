@@ -3,9 +3,11 @@ import type { PlayerBoard } from "../../../types/Board"
 import type { Card } from "../../../types/Card"
 import type { Object } from "../../../types/Object"
 
-import { enemyIcons, objectRevealedIcon, playersIcon } from "../../../helpers/game"
+import { enemyIcons, objectRevealedIcon, playersIcon, shrimpIcon } from "../../../helpers/game"
 
 import { useTranslations } from "../../i18n/utils"
+
+import type { Modal } from "../Modal/Modal"
 
 const animationOptions: KeyframeAnimationOptions = {
   duration: 1000,
@@ -19,7 +21,7 @@ export class GameBoard extends HTMLElement {
   private cards: { element: HTMLElement, clickHandler?: () => void }[][] = [] // 6x6
   private objectsElement: HTMLOListElement
   private enemiesElement: HTMLOListElement
-  private actionsElement: HTMLElement
+  private actionsModal: Modal
   private restartButton: HTMLButtonElement
   private players: { icon: HTMLElement, wrapper: HTMLElement }
   private audio = { hurt: new Audio("/sounds/hurt.mp3"), success: new Audio("/sounds/success.mp3"), win: new Audio("/sounds/win.mp3"), lose: new Audio("/sounds/lose.mp3") }
@@ -30,7 +32,7 @@ export class GameBoard extends HTMLElement {
     this.boardElement = this.querySelector("[data-js=board]")!
     this.objectsElement = this.querySelector("[data-js=objects]")!
     this.enemiesElement = this.querySelector("[data-js=enemies]")!
-    this.actionsElement = this.querySelector("[data-js=actions]")!
+    this.actionsModal = this.querySelector("#game-actions")!
     this.restartButton = this.querySelector("[data-js=restart]")!
     this.players = GameBoard.createPlayers()
     const cards = this.querySelectorAll<HTMLElement>("[data-js=card]")
@@ -56,7 +58,7 @@ export class GameBoard extends HTMLElement {
   }
 
   update = async (board: PlayerBoard) => {
-    const { cards, turn, gameState, character, currentEnemy, forbiddenObjects } = board
+    const { cards, turn, gameState, character, currentEnemy, shrimpCount, enemyCount, forbiddenObjects } = board
 
     // Update board
     this.boardElement.classList.toggle("board--draw", gameState === "draw")
@@ -108,16 +110,22 @@ export class GameBoard extends HTMLElement {
 
     // Display restart prompt when game finishes
     if (["lost", "win"].includes(gameState)) {
-      this.actionsElement.classList.add("show")
       if (gameState === "lost") {
-        this.restartButton.textContent = this.t("Messages.game-lose")
+        this.actionsModal.setTitle(this.t("Messages.game-lose"))
+        if (shrimpCount === 0) {
+          this.actionsModal.setContent(this.t("Messages.game-no-shrimp").replaceAll("{shrimpIcon}", shrimpIcon))
+        } else {
+          this.actionsModal.setContent(this.t("Messages.game-no-enemies").replaceAll("{enemyIcon}", enemyIcons.octopus))
+        }
         this.audio.lose.play()
       } else {
-        this.restartButton.textContent = this.t("Messages.game-win")
+        this.actionsModal.setTitle(this.t("Messages.game-win"))
+        this.actionsModal.setContent("")
         this.audio.win.play()
       }
+      this.actionsModal.open()
     } else {
-      this.actionsElement.classList.remove("show")
+      this.actionsModal.close()
     }
 
     // Remove loading state after first load
