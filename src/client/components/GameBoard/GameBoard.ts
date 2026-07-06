@@ -22,6 +22,7 @@ export class GameBoard extends HTMLElement {
   private actionsElement: HTMLElement
   private restartButton: HTMLButtonElement
   private players: { icon: HTMLElement, wrapper: HTMLElement }
+  private audio = { hurt: new Audio("/sounds/hurt.mp3"), success: new Audio("/sounds/success.mp3"), win: new Audio("/sounds/win.mp3"), lose: new Audio("/sounds/lose.mp3") }
   private t = useTranslations(window.Astro.currentLocale)
 
   constructor() {
@@ -108,7 +109,13 @@ export class GameBoard extends HTMLElement {
     // Display restart prompt when game finishes
     if (["lost", "win"].includes(gameState)) {
       this.actionsElement.classList.add("show")
-      this.restartButton.textContent = gameState === "lost" ? this.t("Messages.game-lose") : this.t("Messages.game-win")
+      if (gameState === "lost") {
+        this.restartButton.textContent = this.t("Messages.game-lose")
+        this.audio.lose.play()
+      } else {
+        this.restartButton.textContent = this.t("Messages.game-win")
+        this.audio.win.play()
+      }
     } else {
       this.actionsElement.classList.remove("show")
     }
@@ -242,8 +249,12 @@ export class GameBoard extends HTMLElement {
         this.players.icon.animate(animations.icon, animationOptions);
         this.players.wrapper.animate(animations.wrapper, animationOptions).addEventListener("finish", () => {
           resolve()
-          if (this.currentBoard && this.currentBoard.shrimpCount > board.shrimpCount) {
+          if (!this.currentBoard) return
+          if (this.currentBoard.shrimpCount > board.shrimpCount) {
             this.players.wrapper.animate([{ opacity: 1 }, { opacity: 0.2 }, { opacity: 1 }], { duration: 150, iterations: 4, easing: "ease-in-out" })
+            this.audio.hurt.play()
+          } else if (this.currentBoard.freedCount < board.freedCount) {
+            this.audio.success.play()
           }
         });
       })
