@@ -20,7 +20,7 @@
     "game-full": "Game session full",
     "connection-lost": "The connection to the game server was lost. Reconnecting...",
     "your-turn": "Your turn",
-    "waiting-for-player": "Waiting for other player",
+    "waiting-for-player": "Waiting for the other player",
     "draw-card": "Draw an enemy card",
     "place-card": "Place the enemy card",
     "move-crabs": "Move the crabs",

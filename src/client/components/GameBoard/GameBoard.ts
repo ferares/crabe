@@ -2,18 +2,26 @@ import type { Enemy } from "../../../types/Enemy"
 import type { PlayerBoard } from "../../../types/Board"
 import type { Card } from "../../../types/Card"
 import type { Object } from "../../../types/Object"
-import type { Player } from "../../../types/Player"
 
 import { enemyIcons, objectRevealedIcon, playersIcon } from "../../../helpers/game"
 
 import { useTranslations } from "../../i18n/utils"
 
+const animationOptions: KeyframeAnimationOptions = {
+  duration: 1000,
+  easing: "ease-in-out",
+  fill: "forwards",
+}
+
 export class GameBoard extends HTMLElement {
+  private currentBoard?: PlayerBoard
   private boardElement: HTMLOListElement
+  private cards: { element: HTMLElement, clickHandler?: () => void }[][] = [] // 6x6
   private objectsElement: HTMLOListElement
   private enemiesElement: HTMLOListElement
   private actionsElement: HTMLElement
   private restartButton: HTMLButtonElement
+  private players: { icon: HTMLElement, wrapper: HTMLElement }
   private t = useTranslations(window.Astro.currentLocale)
 
   constructor() {
@@ -23,39 +31,40 @@ export class GameBoard extends HTMLElement {
     this.enemiesElement = this.querySelector("[data-js=enemies]")!
     this.actionsElement = this.querySelector("[data-js=actions]")!
     this.restartButton = this.querySelector("[data-js=restart]")!
+    this.players = GameBoard.createPlayers()
+    const cards = this.querySelectorAll<HTMLElement>("[data-js=card]")
+    let rowIndex = -1
+    for (let index = 0; index < cards.length; index++) {
+      const card = cards[index]
+      const columnIndex = index % 6
+      if (columnIndex === 0) {
+        rowIndex += 1
+        this.cards[rowIndex] = []
+      }
+      this.cards[rowIndex][columnIndex] = { element: card }
+    }
   }
 
   connectedCallback() {
     this.restartButton.addEventListener("click", this.handleRestart)
+    window.Crabe.setLoading(true)
   }
 
   disconnectedCallback() {
     this.restartButton.removeEventListener("click", this.handleRestart)
   }
 
-  update = (board: PlayerBoard) => {
+  update = async (board: PlayerBoard) => {
     const { cards, turn, gameState, character, currentEnemy, forbiddenObjects } = board
 
-    // Display restart prompt when game finishes
-    if (["lost", "win"].includes(gameState)) {
-      this.actionsElement.classList.add("show")
-      this.restartButton.textContent = gameState === "lost" ? this.t("Messages.game-lose") : this.t("Messages.game-win")
-    } else {
-      this.actionsElement.classList.remove("show")
-    }
-
     // Update board
-    this.boardElement.textContent = ""
     this.boardElement.classList.toggle("board--draw", gameState === "draw")
     this.boardElement.classList.toggle("board--active", ["place", "move"].includes(gameState) && turn === character)
-    for (let rowIndex = 0; rowIndex < cards.length; rowIndex++) {
-      const row = cards[rowIndex];
-      for (let cardIndex = 0; cardIndex < row.length; cardIndex++) {
-        const card = row[cardIndex];
-        const cardElement = this.createCard(board, rowIndex, cardIndex, card)
-        this.boardElement.appendChild(cardElement)
-      }
-    }
+
+    // Update players token
+    await this.updatePlayers(board)
+
+    this.updateCards(board)
 
     // Update forbidden objects
     this.objectsElement.textContent = ""
@@ -95,42 +104,60 @@ export class GameBoard extends HTMLElement {
       item.appendChild(button)
       this.enemiesElement.appendChild(item)
     }
+
+    // Display restart prompt when game finishes
+    if (["lost", "win"].includes(gameState)) {
+      this.actionsElement.classList.add("show")
+      this.restartButton.textContent = gameState === "lost" ? this.t("Messages.game-lose") : this.t("Messages.game-win")
+    } else {
+      this.actionsElement.classList.remove("show")
+    }
+
+    // Remove loading state after first load
+    if (!this.currentBoard) {
+      this.classList.remove("loading")
+      window.Crabe.setLoading(false)
+    }
+    this.currentBoard = board
   }
 
-  private createCard = (board: PlayerBoard, row: number, column: number, card: Card) => {
+  private updateCards = (board: PlayerBoard) => {
     const { cards, turn, currentEnemy, gameState, playersPos } = board
-    let isActive = false;
-    if (currentEnemy?.row === row && !card.object && !card.enemy) {
-      isActive = true;
-    } else if (gameState === "move") {
-      if (turn === "barco") {
-        isActive = playersPos.column === column;
-      } else {
-        isActive = playersPos.row === row;
+    for (let rowIndex = 0; rowIndex < cards.length; rowIndex++) {
+      const row = cards[rowIndex];
+      for (let cardIndex = 0; cardIndex < row.length; cardIndex++) {
+        const cardData = cards[rowIndex][cardIndex]
+        let isActive = false;
+        if (currentEnemy?.row === rowIndex && !cardData.object && !cardData.enemy) {
+          isActive = true;
+        } else if (gameState === "move") {
+          if (turn === "barco") {
+            isActive = playersPos.column === cardIndex;
+          } else {
+            isActive = playersPos.row === rowIndex;
+          }
+        }
+        const enemyPlayer = cardData.enemy?.player ?? (cardData.object?.revealed && cardData.object?.enemy?.player)
+        const card = this.cards[rowIndex][cardIndex]
+        const cardElement = card.element
+        if (card.clickHandler) cardElement.removeEventListener("click", card.clickHandler)
+        card.clickHandler = this.generateClickHandler(board, rowIndex, cardIndex, cardData)
+        cardElement.textContent = ""
+        cardElement.classList.toggle("card--active", isActive)
+        cardElement.classList.toggle("card--disabled", !card.clickHandler)
+        cardElement.classList.remove("card--enemy-barco")
+        cardElement.classList.remove("card--enemy-sol")
+        cardElement.classList.toggle(`card--enemy-${enemyPlayer}`, !!enemyPlayer)
+        cardElement.classList.toggle("card--object", !!cardData.object)
+        cardElement.classList.toggle("card--object-revealed", !!cardData.object?.revealed)
+        if (card.clickHandler) cardElement.addEventListener("click", card.clickHandler)
+        if (cardData.object) {
+          cardElement.appendChild(this.createObject(cardData.object))
+        } else if (cardData.enemy) {
+          cardElement.appendChild(this.createEnemy(cardData.enemy))
+        }
       }
     }
-    const hasPlayer = playersPos.column === column && playersPos.row === row
-    const enemyPlayer = card.enemy?.player ?? (card.object?.revealed && card.object?.enemy?.player)
-    const clickHandler = this.generateClickHandler(board, row, column, card)
-    const cardElement = document.createElement("button")
-    cardElement.type = "button"
-    cardElement.classList.add("card")
-    cardElement.classList.toggle("card--active", isActive)
-    cardElement.classList.toggle("card--disabled", !clickHandler)
-    cardElement.classList.toggle("card--player", hasPlayer)
-    cardElement.classList.toggle(`card--enemy-${enemyPlayer}`, !!enemyPlayer)
-    cardElement.classList.toggle("card--object", !!card.object)
-    cardElement.classList.toggle("card--object-revealed", !!card.object?.revealed)
-    if (clickHandler) cardElement.addEventListener("click", clickHandler)
-    if (card.object) {
-      cardElement.appendChild(this.createObject(card.object))
-    } else if (card.enemy) {
-      cardElement.appendChild(this.createEnemy(card.enemy))
-    }
-    if (hasPlayer) {
-      cardElement.appendChild(this.createPlayers(turn))
-    }
-    return cardElement
   }
 
   private generateClickHandler = (board: PlayerBoard, row: number, column: number, card: Card) => {
@@ -173,11 +200,64 @@ export class GameBoard extends HTMLElement {
     return enemyElement
   }
 
-  private createPlayers = (turn: Player) => {
-    const playersElement = document.createElement("span")
-    playersElement.classList.add("players", `players--${turn}`)
-    playersElement.textContent = playersIcon
-    return playersElement
+  private updatePlayers = (board: PlayerBoard) => {
+    const { turn, playersPos: { column, row } } = board
+
+    // Figure out rotation and background color animation
+    const first = this.players.wrapper.getBoundingClientRect();
+    let animations: { icon: Keyframe[], wrapper: Keyframe[] } = { icon: [], wrapper: [] }
+    if (this.currentBoard) {
+      if (this.currentBoard.turn !== board.turn) {
+        animations.icon = [
+          { transform: "rotate(0deg)", backgroundColor: "var(--color-barco)" },
+          { transform: "rotate(90deg)", backgroundColor: "var(--color-sol)" },
+        ]
+        if (board.turn === "barco") animations.icon.reverse()
+      }
+    }
+
+    // Update players element's classes and position
+    this.players.wrapper.classList.remove("players--barco", "players--sol")
+    this.players.wrapper.classList.add(`players--${turn}`)
+    this.cards[row][column].element.parentElement?.appendChild(this.players.wrapper)
+
+    // Figure out movement animation
+    if (this.currentBoard) {
+      const last = this.players.wrapper.getBoundingClientRect();
+      if (first && last) {
+        const deltaX = first.right - last.right;
+        const deltaY = first.top - last.top;
+        if (deltaX !== 0 || deltaY !== 0) {
+          animations.wrapper = [
+            { transform: `translate(${deltaX}px, ${deltaY}px)` },
+            { transform: "translate(0, 0)" },
+          ]
+        }
+      }
+    }
+    // Animate
+    return new Promise<void>((resolve) => {
+      if (!animations.icon.length && !animations.wrapper.length) return resolve()
+      requestAnimationFrame(() => {
+        this.players.icon.animate(animations.icon, animationOptions);
+        this.players.wrapper.animate(animations.wrapper, animationOptions).addEventListener("finish", () => {
+          resolve()
+          if (this.currentBoard && this.currentBoard.shrimpCount > board.shrimpCount) {
+            this.players.wrapper.animate([{ opacity: 1 }, { opacity: 0.2 }, { opacity: 1 }], { duration: 150, iterations: 4, easing: "ease-in-out" })
+          }
+        });
+      })
+    })
+  }
+
+  private static createPlayers = () => {
+    const wrapper = document.createElement("span")
+    wrapper.classList.add("players")
+    const icon = document.createElement("span")
+    icon.classList.add("players-icon")
+    icon.textContent = playersIcon
+    wrapper.appendChild(icon)
+    return { icon, wrapper }
   }
 
   private handleRestart = () => {

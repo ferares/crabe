@@ -47,9 +47,9 @@ export class Game extends HTMLElement {
     this.shareGameButton.removeEventListener("click", this.handleShare)
   }
 
-  private handleMessage = (response: Response) => {
+  private handleMessage = async (response: Response) => {
     if (response.type === "join" || response.type === "update") {
-      this.board.update(response.board)
+      await this.board.update(response.board)
       this.header.update(response.board)
       this.shareGameModal.toggle(response.board.new)
       if (!response.board.new && response.board.connectedPlayers < 2) {

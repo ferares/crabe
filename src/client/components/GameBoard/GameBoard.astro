@@ -1,11 +1,26 @@
-<crabe-game-board>
+---
+const rows = [0, 1, 2, 3, 4, 5];
+const columns = [0, 1, 2, 3, 4, 5];
+---
+
+<crabe-game-board class="loading">
   <div class="board-wrapper">
     <ol class="objects" data-js="objects"></ol>
-    <ol class="board" data-js="board"></ol>
+    <ol class="board" data-js="board">
+      {
+        rows.map((_) =>
+          columns.map((_) => (
+            <li class="card-wrapper">
+              <button type="button" class="card" data-js="card" />
+            </li>
+          )),
+        )
+      }
+    </ol>
     <ol class="enemy-rows" data-js="enemies"></ol>
     <div class="game-actions" data-js="actions">
       <div class="new-game">
-        <button type="button" class="btn" data-js="restart"> </button>
+        <button type="button" class="btn" data-js="restart"></button>
       </div>
     </div>
   </div>

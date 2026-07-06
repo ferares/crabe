@@ -27,7 +27,7 @@ export class Tutorial extends HTMLElement {
     this.header = this.querySelector("crabe-game-header")!
     this.modal = this.querySelector("#tutorial-modal")!
     this.modalButton = this.querySelector("[data-js=modal-button]")!
-    this.card = this.querySelector("[data-js=card]")!
+    this.card = this.querySelector("[data-js=tutorial-card]")!
     this.cardTitle = this.querySelector("[data-js=card-title]")!
     this.cardContent = this.querySelector("[data-js=card-content]")!
     this.cardButton = this.querySelector("[data-js=card-button]")!
@@ -156,8 +156,8 @@ export class Tutorial extends HTMLElement {
     this.nextStep()
   }
 
-  private render = () => {
-    this.boardElement.update(getPlayerBoardData("barco", 2, false, this.board))
+  private render = async () => {
+    await this.boardElement.update(getPlayerBoardData("barco", 2, false, this.board))
     this.header.update(getPlayerBoardData("barco", 2, false, this.board))
   }
 }
