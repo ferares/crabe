@@ -3,17 +3,12 @@ import type { PlayerBoard } from "../../../types/Board"
 import type { Card } from "../../../types/Card"
 import type { Object } from "../../../types/Object"
 
-import { enemyIcons, objectRevealedIcon, playersIcon, shrimpIcon } from "../../../helpers/game"
+import { enemyIcons, objectRevealedIcon, shrimpIcon } from "../../../helpers/game"
 
 import { useTranslations } from "../../i18n/utils"
 
 import type { Modal } from "../Modal/Modal"
-
-const animationOptions: KeyframeAnimationOptions = {
-  duration: 1000,
-  easing: "ease-in-out",
-  fill: "forwards",
-}
+import { Players } from "../../scripts/Players"
 
 export class GameBoard extends HTMLElement {
   private currentBoard?: PlayerBoard
@@ -23,8 +18,8 @@ export class GameBoard extends HTMLElement {
   private enemiesElement: HTMLOListElement
   private actionsModal: Modal
   private restartButton: HTMLButtonElement
-  private players: { icon: HTMLElement, wrapper: HTMLElement }
-  private audio = { hurt: new Audio("/sounds/hurt.mp3"), success: new Audio("/sounds/success.mp3"), win: new Audio("/sounds/win.mp3"), lose: new Audio("/sounds/lose.mp3") }
+  private players = new Players()
+  private audio = { win: new Audio("/sounds/win.mp3"), lose: new Audio("/sounds/lose.mp3") }
   private t = useTranslations(window.Astro.currentLocale)
 
   constructor() {
@@ -34,7 +29,6 @@ export class GameBoard extends HTMLElement {
     this.enemiesElement = this.querySelector("[data-js=enemies]")!
     this.actionsModal = this.querySelector("#game-actions")!
     this.restartButton = this.querySelector("[data-js=restart]")!
-    this.players = GameBoard.createPlayers()
     const cards = this.querySelectorAll<HTMLElement>("[data-js=card]")
     let rowIndex = -1
     for (let index = 0; index < cards.length; index++) {
@@ -58,14 +52,14 @@ export class GameBoard extends HTMLElement {
   }
 
   update = async (board: PlayerBoard) => {
-    const { cards, turn, gameState, character, currentEnemy, shrimpCount, enemyCount, forbiddenObjects } = board
+    const { cards, turn, gameState, character, currentEnemy, shrimpCount, forbiddenObjects } = board
 
     // Update board
     this.boardElement.classList.toggle("board--draw", gameState === "draw")
     this.boardElement.classList.toggle("board--active", ["place", "move"].includes(gameState) && turn === character)
 
     // Update players token
-    await this.updatePlayers(board)
+    await this.players.update(this.cards.map(card => card.map(card => card.element)), board, this.currentBoard)
 
     this.updateCards(board)
 
@@ -213,70 +207,6 @@ export class GameBoard extends HTMLElement {
     enemyElement.classList.add("enemy", `enemy--${enemy.player}`)
     enemyElement.textContent = enemy.isLobster ? enemyIcons.lobster : enemyIcons.octopus
     return enemyElement
-  }
-
-  private updatePlayers = (board: PlayerBoard) => {
-    const { turn, playersPos: { column, row } } = board
-
-    // Figure out rotation and background color animation
-    const first = this.players.wrapper.getBoundingClientRect();
-    let animations: { icon: Keyframe[], wrapper: Keyframe[] } = { icon: [], wrapper: [] }
-    if (this.currentBoard) {
-      if (this.currentBoard.turn !== board.turn) {
-        animations.icon = [
-          { transform: "rotate(0deg)", backgroundColor: "var(--color-barco)" },
-          { transform: "rotate(90deg)", backgroundColor: "var(--color-sol)" },
-        ]
-        if (board.turn === "barco") animations.icon.reverse()
-      }
-    }
-
-    // Update players element's classes and position
-    this.players.wrapper.classList.remove("players--barco", "players--sol")
-    this.players.wrapper.classList.add(`players--${turn}`)
-    this.cards[row][column].element.parentElement?.appendChild(this.players.wrapper)
-
-    // Figure out movement animation
-    if (this.currentBoard) {
-      const last = this.players.wrapper.getBoundingClientRect();
-      if (first && last) {
-        const deltaX = first.right - last.right;
-        const deltaY = first.top - last.top;
-        if (deltaX !== 0 || deltaY !== 0) {
-          animations.wrapper = [
-            { transform: `translate(${deltaX}px, ${deltaY}px)` },
-            { transform: "translate(0, 0)" },
-          ]
-        }
-      }
-    }
-    // Animate
-    return new Promise<void>((resolve) => {
-      if (!animations.icon.length && !animations.wrapper.length) return resolve()
-      requestAnimationFrame(() => {
-        this.players.icon.animate(animations.icon, animationOptions);
-        this.players.wrapper.animate(animations.wrapper, animationOptions).addEventListener("finish", () => {
-          resolve()
-          if (!this.currentBoard) return
-          if (this.currentBoard.shrimpCount > board.shrimpCount) {
-            this.players.wrapper.animate([{ opacity: 1 }, { opacity: 0.2 }, { opacity: 1 }], { duration: 150, iterations: 4, easing: "ease-in-out" })
-            this.audio.hurt.play()
-          } else if (this.currentBoard.freedCount < board.freedCount) {
-            this.audio.success.play()
-          }
-        });
-      })
-    })
-  }
-
-  private static createPlayers = () => {
-    const wrapper = document.createElement("span")
-    wrapper.classList.add("players")
-    const icon = document.createElement("span")
-    icon.classList.add("players-icon")
-    icon.textContent = playersIcon
-    wrapper.appendChild(icon)
-    return { icon, wrapper }
   }
 
   private handleRestart = () => {
