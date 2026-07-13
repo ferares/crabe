@@ -175,11 +175,11 @@ crabe-game-board.loading {
 
 .players--barco {
   background-color: var(--color-barco);
+  rotate: 90deg;
 }
 
 .players--sol {
   background-color: var(--color-sol);
-  transform: rotate(90deg);
 }
 
 #game-actions {

@@ -16,7 +16,7 @@ export class Players {
 
   constructor() {
     this.wrapper = document.createElement("span")
-    this.wrapper.classList.add("players")
+    this.wrapper.classList.add("players", "players--barco")
     this.icon = document.createElement("span")
     this.icon.classList.add("players-icon")
     this.icon.textContent = playersIcon
@@ -29,9 +29,6 @@ export class Players {
     // Figure out if the player turn has changed
     const hasTurnChanged = previousBoard && previousBoard.turn !== board.turn
 
-    // Update players element's classes and position
-    this.wrapper.classList.remove("players--barco", "players--sol")
-    this.wrapper.classList.add(`players--${turn}`)
     // Save current position for animating movement
     const first = this.wrapper.getBoundingClientRect()
     // Move players
@@ -70,19 +67,22 @@ export class Players {
 
   private animateMove = async (deltaX: number, deltaY: number) => {
     const frames = [
-      { transform: `translate(${deltaX}px, ${deltaY}px)` },
-      { transform: "translate(0, 0)" },
+      { translate: `${deltaX}px ${deltaY}px` },
+      { translate: "0 0" },
     ]
     return await this.animate(this.wrapper, frames, animationOptions)
   }
 
   private animateTurnChange = async (turn: Player) => {
     const frames = [
-      { transform: "rotate(0deg)", backgroundColor: "var(--color-barco)" },
-      { transform: "rotate(90deg)", backgroundColor: "var(--color-sol)" },
+      { rotate: "0deg", backgroundColor: "var(--color-sol)" },
+      { rotate: "90deg", backgroundColor: "var(--color-barco)" },
     ]
-    if (turn === "barco") frames.reverse()
-    return await this.animate(this.wrapper, frames, animationOptions)
+    if (turn === "sol") frames.reverse()
+    return await this.animate(this.wrapper, frames, animationOptions).finally(() => {
+      this.wrapper.classList.remove("players--barco", "players--sol")
+      this.wrapper.classList.add(`players--${turn}`)
+    })
   }
 
   private animate = async (element: Element, frames: Keyframe[], options?: KeyframeAnimationOptions) => {
