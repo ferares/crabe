@@ -211,6 +211,7 @@ export class GameBoard extends HTMLElement {
 
   private handleRestart = () => {
     window.Crabe.emitEvent(this, "crabe:game:restart")
+    this.actionsModal.close()
   }
 
   private handlePlaceEnemy = (row: number, column: number) => {
