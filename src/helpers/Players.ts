@@ -1,7 +1,8 @@
-import type { PlayerBoard } from "../../types/Board"
+import type { PlayerBoard } from "../types/Board"
+import type { Player } from "../types/Player"
 
-import { playersIcon } from "../../helpers/game"
-import type { Player } from "../../types/Player"
+import { animate, playersIcon } from "./game"
+import type { Card } from "./Card"
 
 const animationOptions: KeyframeAnimationOptions = {
   duration: 1000,
@@ -14,16 +15,17 @@ export class Players {
   private wrapper: HTMLElement
   private audio = { hurt: new Audio("/sounds/hurt.mp3"), success: new Audio("/sounds/success.mp3") }
 
-  constructor() {
+  constructor(turn?: Player) {
     this.wrapper = document.createElement("span")
-    this.wrapper.classList.add("players", "players--barco")
+    this.wrapper.classList.add("players")
     this.icon = document.createElement("span")
     this.icon.classList.add("players-icon")
     this.icon.textContent = playersIcon
     this.wrapper.appendChild(this.icon)
+    this.updateTurn(turn ?? "barco")
   }
 
-  update = async (cards: HTMLElement[][], board: PlayerBoard, previousBoard?: PlayerBoard) => {
+  update = async (cards: Card[][], board: PlayerBoard, previousBoard?: PlayerBoard) => {
     const { turn, playersPos: { column, row } } = board
 
     // Figure out if the player turn has changed
@@ -32,7 +34,7 @@ export class Players {
     // Save current position for animating movement
     const first = this.wrapper.getBoundingClientRect()
     // Move players
-    cards[row][column].parentElement?.appendChild(this.wrapper)
+    cards[row][column].movePlayers(this.wrapper)
 
     // Figure out movement animation
     let hasMoved = false
@@ -51,7 +53,12 @@ export class Players {
     }
 
     // Animate
-    if (hasTurnChanged) this.animateTurnChange(turn)
+    if (hasTurnChanged) {
+      this.animateTurnChange(turn)
+    } else {
+      // Update turn independently of if it has changed for consistent state after page reloads
+      this.updateTurn(turn)
+    }
     if (hasMoved) await this.animateMove(deltaX, deltaY)
     if (wasHit) this.animateHit()
     if (previousBoard && previousBoard.freedCount < board.freedCount) {
@@ -59,10 +66,15 @@ export class Players {
     }
   }
 
+  private updateTurn = (turn: Player) => {
+    this.wrapper.classList.remove("players--barco", "players--sol")
+    this.wrapper.classList.add(`players--${turn}`)
+  }
+
   private animateHit = async () => {
     const frames = [{ opacity: 1 }, { opacity: 0.2 }, { opacity: 1 }]
     this.audio.hurt.play()
-    return await this.animate(this.wrapper, frames, { duration: 150, iterations: 4, easing: "ease-in-out" })
+    return await animate(this.wrapper, frames, { duration: 150, iterations: 4, easing: "ease-in-out" })
   }
 
   private animateMove = async (deltaX: number, deltaY: number) => {
@@ -70,7 +82,7 @@ export class Players {
       { translate: `${deltaX}px ${deltaY}px` },
       { translate: "0 0" },
     ]
-    return await this.animate(this.wrapper, frames, animationOptions)
+    return await animate(this.wrapper, frames, animationOptions)
   }
 
   private animateTurnChange = async (turn: Player) => {
@@ -79,14 +91,6 @@ export class Players {
       { rotate: "90deg", backgroundColor: "var(--color-barco)" },
     ]
     if (turn === "sol") frames.reverse()
-    return await this.animate(this.wrapper, frames, animationOptions).finally(() => {
-      this.wrapper.classList.remove("players--barco", "players--sol")
-      this.wrapper.classList.add(`players--${turn}`)
-    })
-  }
-
-  private animate = async (element: Element, frames: Keyframe[], options?: KeyframeAnimationOptions) => {
-    if (!frames.length) return Promise.resolve(false)
-    return element.animate(frames, options).finished.then(() => true).catch(() => false)
+    return await animate(this.wrapper, frames, animationOptions).finally(() => this.updateTurn(turn))
   }
 }

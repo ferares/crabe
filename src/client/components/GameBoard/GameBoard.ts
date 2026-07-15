@@ -1,19 +1,17 @@
-import type { Enemy } from "../../../types/Enemy"
 import type { PlayerBoard } from "../../../types/Board"
-import type { Card } from "../../../types/Card"
-import type { Object } from "../../../types/Object"
-
-import { enemyIcons, objectRevealedIcon, shrimpIcon } from "../../../helpers/game"
 
 import { useTranslations } from "../../i18n/utils"
 
+import { createEnemy, createObject, enemyIcons, shrimpIcon } from "../../../helpers/game"
+import { Players } from "../../../helpers/Players"
+import { Card } from "../../../helpers/Card"
+
 import type { Modal } from "../Modal/Modal"
-import { Players } from "../../scripts/Players"
 
 export class GameBoard extends HTMLElement {
   private currentBoard?: PlayerBoard
   private boardElement: HTMLOListElement
-  private cards: { element: HTMLElement, clickHandler?: () => void }[][] = [] // 6x6
+  private cards: Card[][] = [] // 6x6
   private objectsElement: HTMLOListElement
   private enemiesElement: HTMLOListElement
   private actionsModal: Modal
@@ -30,15 +28,17 @@ export class GameBoard extends HTMLElement {
     this.actionsModal = this.querySelector("#game-actions")!
     this.restartButton = this.querySelector("[data-js=restart]")!
     const cards = this.querySelectorAll<HTMLElement>("[data-js=card]")
-    let rowIndex = -1
+    // Create cards
+    const handlers = { placeEnemy: this.handlePlaceEnemy, movePlayers: this.handleMovePlayers }
+    let row = -1
     for (let index = 0; index < cards.length; index++) {
       const card = cards[index]
-      const columnIndex = index % 6
-      if (columnIndex === 0) {
-        rowIndex += 1
-        this.cards[rowIndex] = []
+      const column = index % 6
+      if (column === 0) {
+        row += 1
+        this.cards[row] = []
       }
-      this.cards[rowIndex][columnIndex] = { element: card }
+      this.cards[row][column] = new Card(card, { row, column }, handlers)
     }
   }
 
@@ -53,15 +53,27 @@ export class GameBoard extends HTMLElement {
 
   update = async (board: PlayerBoard) => {
     const { cards, turn, gameState, character, currentEnemy, shrimpCount, forbiddenObjects } = board
+    const boardCards = this.cards.flat()
 
     // Update board
     this.boardElement.classList.toggle("board--draw", gameState === "draw")
     this.boardElement.classList.toggle("board--active", ["place", "move"].includes(gameState) && turn === character)
 
-    // Update players token
-    await this.players.update(this.cards.map(card => card.map(card => card.element)), board, this.currentBoard)
+    // Update players
+    await this.players.update(this.cards, board, this.currentBoard)
 
-    this.updateCards(board)
+    // Update cards
+    // TODO: This double loop is wastefull
+    for (const rows of this.cards) {
+      for (const card of rows) {
+        await card.animateEnemy(cards[card.position.row][card.position.column], this.currentBoard?.cards[card.position.row][card.position.column])
+      }
+    }
+    for (const rows of this.cards) {
+      for (const card of rows) {
+        card.update(board)
+      }
+    }
 
     // Update forbidden objects
     this.objectsElement.textContent = ""
@@ -71,7 +83,7 @@ export class GameBoard extends HTMLElement {
       item.title = this.t("Messages.object-enemy")
       const cardElement = document.createElement("span")
       cardElement.classList.add("card", "btn", "card--disabled", `card--enemy-${card.object?.enemy?.player}`, "card--object")
-      cardElement.appendChild(this.createObject(card.object!))
+      cardElement.appendChild(createObject(card.object!))
       item.appendChild(cardElement)
       this.objectsElement.appendChild(item)
     }
@@ -85,7 +97,7 @@ export class GameBoard extends HTMLElement {
         const cardElement = document.createElement("span")
         cardElement.title = this.t("Messages.place-enemy")
         cardElement.classList.add("card", "btn", "btn--enemy", "card--disabled", `card--enemy-${currentEnemy.player}}`)
-        cardElement.appendChild(this.createEnemy(currentEnemy))
+        cardElement.appendChild(createEnemy(currentEnemy))
         item.appendChild(cardElement)
       }
       this.enemiesElement.appendChild(item)
@@ -128,85 +140,6 @@ export class GameBoard extends HTMLElement {
       window.Crabe.setLoading(false)
     }
     this.currentBoard = board
-  }
-
-  private updateCards = (board: PlayerBoard) => {
-    const { cards, turn, currentEnemy, gameState, playersPos } = board
-    for (let rowIndex = 0; rowIndex < cards.length; rowIndex++) {
-      const row = cards[rowIndex];
-      for (let cardIndex = 0; cardIndex < row.length; cardIndex++) {
-        const cardData = cards[rowIndex][cardIndex]
-        let isActive = false;
-        if (currentEnemy?.row === rowIndex && !cardData.object && !cardData.enemy) {
-          isActive = true;
-        } else if (gameState === "move") {
-          if (turn === "barco") {
-            isActive = playersPos.column === cardIndex;
-          } else {
-            isActive = playersPos.row === rowIndex;
-          }
-        }
-        const enemyPlayer = cardData.enemy?.player ?? (cardData.object?.revealed && cardData.object?.enemy?.player)
-        const card = this.cards[rowIndex][cardIndex]
-        const cardElement = card.element
-        if (card.clickHandler) cardElement.removeEventListener("click", card.clickHandler)
-        card.clickHandler = this.generateClickHandler(board, rowIndex, cardIndex, cardData)
-        cardElement.textContent = ""
-        cardElement.classList.toggle("card--active", isActive)
-        cardElement.classList.toggle("card--disabled", !card.clickHandler)
-        cardElement.classList.remove("card--enemy-barco")
-        cardElement.classList.remove("card--enemy-sol")
-        cardElement.classList.toggle(`card--enemy-${enemyPlayer}`, !!enemyPlayer)
-        cardElement.classList.toggle("card--object", !!cardData.object)
-        cardElement.classList.toggle("card--object-revealed", !!cardData.object?.revealed)
-        if (card.clickHandler) cardElement.addEventListener("click", card.clickHandler)
-        if (cardData.object) {
-          cardElement.appendChild(this.createObject(cardData.object))
-        } else if (cardData.enemy) {
-          cardElement.appendChild(this.createEnemy(cardData.enemy))
-        }
-      }
-    }
-  }
-
-  private generateClickHandler = (board: PlayerBoard, row: number, column: number, card: Card) => {
-    const { turn, currentEnemy, gameState, playersPos, character } = board
-    let clickHandler: undefined | (() => void) = undefined;
-    if (turn === character) {
-      if (currentEnemy?.row === row && !card.object && !card.enemy) {
-        clickHandler = () => this.handlePlaceEnemy(row, column);
-      } else if (gameState === "move") {
-        if (turn === "barco") {
-          if (playersPos.column === column)
-            clickHandler = () => this.handleMovePlayers(row, column);
-        } else {
-          if (playersPos.row === row)
-            clickHandler = () => this.handleMovePlayers(row, column);
-        }
-      }
-    }
-    return clickHandler
-  }
-
-  private createObject = (object: Object) => {
-    const objectElement = document.createElement("span")
-    objectElement.classList.add("object")
-    objectElement.classList.toggle("object", object.revealed)
-    if (!object.revealed) {
-      objectElement.textContent = object.icon
-    } else if (object.enemy) {
-      objectElement.appendChild(this.createEnemy(object.enemy))
-    } else {
-      objectElement.textContent = objectRevealedIcon
-    }
-    return objectElement
-  }
-
-  private createEnemy = (enemy: Enemy) => {
-    const enemyElement = document.createElement("span")
-    enemyElement.classList.add("enemy", `enemy--${enemy.player}`)
-    enemyElement.textContent = enemy.isLobster ? enemyIcons.lobster : enemyIcons.octopus
-    return enemyElement
   }
 
   private handleRestart = () => {

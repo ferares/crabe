@@ -6,6 +6,7 @@ import { type Enemy } from "../types/Enemy"
 import { type Player } from "../types/Player"
 import { type Position } from "../types/Position"
 import { type GameState } from "../types/GameState"
+import type { Object } from "../types/Object"
 
 export const viewport = { width: 1024, viewportFit: "contain" }
 export const forbiddenObjectsIcon = "☠️"
@@ -335,4 +336,30 @@ export function getTutorialBoard(): Board {
     turn: "barco",
     freedCount: 0,
   }
+}
+
+export function createObject(object: Object) {
+  const objectElement = document.createElement("span")
+  objectElement.classList.add("object")
+  objectElement.classList.toggle("object", object.revealed)
+  if (!object.revealed) {
+    objectElement.textContent = object.icon
+  } else if (object.enemy) {
+    objectElement.appendChild(createEnemy(object.enemy))
+  } else {
+    objectElement.textContent = objectRevealedIcon
+  }
+  return objectElement
+}
+
+export function createEnemy(enemy: Enemy) {
+  const enemyElement = document.createElement("span")
+  enemyElement.classList.add("enemy", `enemy--${enemy.player}`)
+  enemyElement.textContent = enemy.isLobster ? enemyIcons.lobster : enemyIcons.octopus
+  return enemyElement
+}
+
+export async function animate(element: Element, frames: Keyframe[], options?: KeyframeAnimationOptions) {
+  if (!frames.length) return Promise.resolve(false)
+  return element.animate(frames, options).finished.then(() => true).catch(() => false)
 }

@@ -53,7 +53,7 @@ export class Tutorial extends HTMLElement {
     this.cardButton.removeEventListener("click", () => this.nextStep())
   }
 
-  private nextStep = () => {
+  private nextStep = async () => {
     this.step++
     if (this.step === 0) {
       let content = this.t("Pages.Tutorial.t1")
@@ -97,18 +97,20 @@ export class Tutorial extends HTMLElement {
       this.cardTitle.textContent = this.t("Pages.Tutorial.t8")
       this.cardContent.innerHTML = this.t("Pages.Tutorial.m8")
       drawEnemy(this.board)
-      this.render()
+      await this.render()
     } else if (this.step === 8) {
+      this.card.classList.remove("show")
+      placeEnemy(4, 0, this.board)
+      await this.render()
+      this.card.classList.add("show")
       this.card.setAttribute("data-step", this.step.toString())
       this.cardTitle.textContent = this.t("Pages.Tutorial.t9")
       this.cardContent.innerHTML = this.t("Pages.Tutorial.m9")
-      placeEnemy(4, 0, this.board)
-      this.render()
     } else if (this.step === 9) {
       this.card.classList.remove("show")
       this.cardButton.classList.add("hide")
       movePlayer(0, 5, this.board)
-      this.render()
+      await this.render()
       this.nextStep()
     } else if (this.step === 10) {
       this.card.setAttribute("data-step", this.step.toString())
@@ -133,26 +135,26 @@ export class Tutorial extends HTMLElement {
     }
   }
 
-  private handlePlaceEnemy = (event: CrabeGameEnemyEvent) => {
+  private handlePlaceEnemy = async (event: CrabeGameEnemyEvent) => {
     const { row, column } = event.detail
     if (this.step !== 3) return
     placeEnemy(row, column, this.board)
-    this.render()
+    await this.render()
     this.nextStep()
   }
 
-  private handleMovePlayers = (event: CrabeGameMoveEvent) => {
+  private handleMovePlayers = async (event: CrabeGameMoveEvent) => {
     const { row, column } = event.detail
     if ((this.step !== 5) || (row !== 0) || (column !== 0)) return
     movePlayer(0, 0, this.board)
-    this.render()
+    await this.render()
     this.nextStep()
   }
 
-  private handleDraw = () => {
+  private handleDraw = async () => {
     if (this.step !== 2) return
     drawEnemy(this.board)
-    this.render()
+    await this.render()
     this.nextStep()
   }
 
