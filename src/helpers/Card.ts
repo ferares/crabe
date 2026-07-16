@@ -49,6 +49,7 @@ export class Card {
     this.element.classList.remove("card--enemy-barco")
     this.element.classList.remove("card--enemy-sol")
     this.element.classList.toggle(`card--enemy-${enemyPlayer}`, !!enemyPlayer)
+    this.element.classList.toggle("card--forbidden", !!cardData.object?.enemy)
     this.element.classList.toggle("card--object", !!cardData.object)
     this.element.classList.toggle("card--object-revealed", !!cardData.object?.revealed)
 

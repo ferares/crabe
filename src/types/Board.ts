@@ -19,7 +19,6 @@ export type PlayerBoard = {
   character: Player
   cards: Card[][]
   playersPos: Position
-  forbiddenObjects: Position[]
   gameState: GameState
   shrimpCount: number
   turn: Player

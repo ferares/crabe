@@ -68,7 +68,7 @@
       "t11": "Oof!",
       "m11": "<p>Even though we landed on a safe spot, we had to cross an enemy to get here, which cost us 1 {shrimpIcon}. Now we only have 2 left.</p><p>Bumping into or landing on an enemy means losing 1 {shrimpIcon}. Running out of shrimps means game over, so try to avoid losing them if you can!</p>",
       "t12": "One last thing",
-      "m12": "<p>If you or your friend run out of enemy cards to place on the board, it's game over!</p><p>You each start with 12 cards, and you can keep an eye on your remaining stash by checking the counter on top of the board. While you're there, you can also see how many shrimps you have left and how many crabs you've freed.</p><p>Need to check which objects are off-limits? You'll find your forbidden objects on the side of the board, or at the top if you're on mobile.</p>"
+      "m12": "<p>If you or your friend run out of enemy cards to place on the board, it's game over!</p><p>You each start with 12 cards, and you can keep an eye on your remaining stash by checking the counter on top of the board. While you're there, you can also see how many shrimps you have left and how many crabs you've freed.</p><p>Need to check which objects are off-limits? You'll find your forbidden objects are marked with a {forbiddenObjectsIcon} on the board.</p>"
     }
   }
 }

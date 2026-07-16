@@ -107,28 +107,22 @@ function eatShrimp(amount: number, board: Board) {
   if (board.shrimpCount === 0) updateGameState("lost", board)
 }
 
-function getPlayerCardData(cards: Card[][]): Card[][] {
-  return cards.map((row) => row.map((card) => ({
-    enemy: card.enemy,
-    object: card.object ? {
-      icon: card.object.icon,
-      enemy: card.object.revealed ? card.object.enemy : undefined,
-      revealed: card.object.revealed,
-    } : undefined,
-  })))
-}
-
-function getPlayerForbiddenObjects(player: Player, cards: Card[][]): Position[] {
-  const postions: Position[] = []
-  for (let row = 0; row < cards.length; row++) {
-    const cardRow = cards[row]
-    if (!cardRow) continue
-    for (let column = 0; column < cardRow.length; column++) {
-      const card = cardRow?.[column]
-      if (card?.object?.enemy?.player === player) postions.push({ row, column })
+function getPlayerCardData(cards: Card[][], player: Player): Card[][] {
+  return cards.map((row) => row.map((card) => {
+    let enemy: Enemy | undefined
+    if (card.object?.revealed) {
+      enemy = card.object.enemy
+    } else if (card.object?.enemy?.player === player) {
+      enemy = card.object.enemy
     }
-  }
-  return postions
+    return {
+      enemy: card.enemy,
+      object: card.object ? {
+        ...card.object,
+        enemy,
+      } : undefined,
+    }
+  }))
 }
 
 function updateGameState(state: GameState, board: Board) {
@@ -192,9 +186,8 @@ export function getPlayerBoardData(player: Player, connectedPlayers: number, new
   const enemyCount = board.enemies[player].length
   return {
     character: player,
-    cards: getPlayerCardData(board.cards),
+    cards: getPlayerCardData(board.cards, player),
     playersPos: board.playersPos,
-    forbiddenObjects: getPlayerForbiddenObjects(player, board.cards),
     gameState: board.gameState,
     shrimpCount: board.shrimpCount,
     turn: board.turn,
@@ -346,6 +339,12 @@ export function createObject(object: Object) {
   objectElement.classList.toggle("object", object.revealed)
   if (!object.revealed) {
     objectElement.textContent = object.icon
+    if (object.enemy) {
+      const forbidden = document.createElement("span")
+      forbidden.classList.add("forbidden")
+      forbidden.textContent = forbiddenObjectsIcon
+      objectElement.appendChild(forbidden)
+    }
   } else if (object.enemy) {
     objectElement.appendChild(createEnemy(object.enemy))
   } else {

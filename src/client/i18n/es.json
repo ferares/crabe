@@ -68,7 +68,7 @@
       "t11": "¡Uf!",
       "m11": "<p>Aunque aterrizamos en un lugar seguro, tuvimos que cruzar un enemigo para llegar aquí, lo que nos costó 1 {shrimpIcon}. Ahora solo nos quedan 2.</p><p>Cruzar o aterrizar en un enemigo significa perder 1 {shrimpIcon}. Quedarse sin camarones significa que se acabó el juego, ¡así que trata de evitar perderlos si puedes!</p>",
       "t12": "Una cosa más",
-      "m12": "<p>¡Si tú o tu amigo se quedan sin cartas de enemigo para colocar en el tablero, se acabó el juego!</p><p>Cada uno comienza con 12 cartas, y puedes mantener un ojo en tu reserva restante revisando el contador en la parte superior del tablero. Mientras estás allí, también puedes ver cuántos camarones te quedan y cuántos cangrejos has liberado.</p><p>¿Necesitas verificar qué objetos están prohibidos? Encontrarás tus objetos prohibidos en el lateral izquierdo del tablero, o en la parte superior si estás en un dispositivo móvil.</p>"
+      "m12": "<p>¡Si tú o tu amigo se quedan sin cartas de enemigo para colocar en el tablero, se acabó el juego!</p><p>Cada uno comienza con 12 cartas, y puedes mantener un ojo en tu reserva restante revisando el contador en la parte superior del tablero. Mientras estás allí, también puedes ver cuántos camarones te quedan y cuántos cangrejos has liberado.</p><p>¿Necesitas verificar qué objetos están prohibidos? Verás que tus objetos prohibidos están marcados con un {forbiddenObjectsIcon} en el tablero.</p>"
     }
   }
 }

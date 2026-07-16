@@ -2,7 +2,7 @@ import type { CrabeGameEnemyEvent, CrabeGameMoveEvent } from "../../../types/Eve
 
 import { getLocalizedPath, useTranslations } from "../../i18n/utils";
 
-import { drawEnemy, enemyIcons, getPlayerBoardData, getTutorialBoard, movePlayer, objectRevealedIcon, placeEnemy, playersIcon, shrimpIcon } from "../../../helpers/game";
+import { drawEnemy, enemyIcons, forbiddenObjectsIcon, getPlayerBoardData, getTutorialBoard, movePlayer, objectRevealedIcon, placeEnemy, playersIcon, shrimpIcon } from "../../../helpers/game";
 
 import type { GameBoard } from "../GameBoard/GameBoard";
 import type { GameHeader } from "../GameHeader/GameHeader";
@@ -130,7 +130,7 @@ export class Tutorial extends HTMLElement {
     } else if (this.step === 12) {
       this.card.classList.remove("show")
       let content = this.t("Pages.Tutorial.t12")
-      content += this.t("Pages.Tutorial.m12")
+      content += this.t("Pages.Tutorial.m12").replaceAll("{forbiddenObjectsIcon}", forbiddenObjectsIcon)
       this.modalButton.textContent = this.t("Labels.finish-tutorial")
       this.modalButton.addEventListener("click", () => this.nextStep())
       this.modal.setContent(content)

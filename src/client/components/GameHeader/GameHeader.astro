@@ -4,7 +4,6 @@ import { useTranslations } from "../../i18n/utils";
 
 import {
   enemyIcons,
-  forbiddenObjectsIcon,
   objectRevealedIcon,
   shrimpIcon,
 } from "../../../helpers/game";
@@ -33,9 +32,6 @@ const t = useTranslations(Astro.currentLocale as Locale);
         </span>
         x
         <span data-js="enemies"></span>
-      </span>
-      <span class="counts counts--objects" title={t("Messages.object-enemy")}>
-        {forbiddenObjectsIcon} = <span data-js="objects"></span>
       </span>
     </span>
   </header>

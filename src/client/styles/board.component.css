@@ -29,31 +29,17 @@ crabe-game-board.loading {
   gap: 2rem;
 }
 
-.counts--objects {
-  display: none;
-}
-
 .board-wrapper {
   display: grid;
   gap: 1rem;
-  grid-template-columns: 1fr 6fr 1fr;
+  grid-template-columns: 6fr 1fr;
   margin: 0 auto;
   max-width: var(--content-width);
   padding: 2rem 0;
   position: relative;
 }
 
-.objects {
-  display: grid;
-  gap: 1rem;
-  grid-template-rows: repeat(6, 1fr);
-  list-style: none;
-  margin: 0;
-  padding-left: 0;
-}
-
 .board {
-  border-left: 1px solid black;
   border-right: 1px solid black;
   display: grid;
   gap: 1rem;
@@ -151,6 +137,15 @@ crabe-game-board.loading {
   padding-left: 0;
 }
 
+.forbidden {
+  font-size: 1.4rem;
+  overflow: hidden;
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  z-index: 999;
+}
+
 .players {
   border: 2px solid black;
   border-radius: 50%;
@@ -224,14 +219,6 @@ crabe-game-board.loading {
     display: block;
     padding-bottom: 150px;
     position: relative;
-  }
-
-  .objects {
-    display: none;
-  }
-
-  .counts--objects {
-    display: block;
   }
 
   .board {

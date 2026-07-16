@@ -2,7 +2,7 @@ import type { PlayerBoard } from "../../../types/Board"
 
 import { useTranslations } from "../../i18n/utils"
 
-import { createEnemy, createObject, enemyIcons, shrimpIcon } from "../../../helpers/game"
+import { createEnemy, enemyIcons, shrimpIcon } from "../../../helpers/game"
 import { Players } from "../../../helpers/Players"
 import { Card } from "../../../helpers/Card"
 
@@ -53,7 +53,7 @@ export class GameBoard extends HTMLElement {
   }
 
   update = async (board: PlayerBoard, update: Update) => {
-    const { cards, turn, gameState, character, currentEnemy, shrimpCount, forbiddenObjects } = board
+    const { cards, turn, gameState, character, currentEnemy, shrimpCount } = board
 
     // Update board
     this.boardElement.classList.toggle("board--draw", gameState === "draw")
@@ -72,19 +72,6 @@ export class GameBoard extends HTMLElement {
       for (const card of rows) {
         card.update(board)
       }
-    }
-
-    // Update forbidden objects
-    this.objectsElement.textContent = ""
-    for (const position of forbiddenObjects) {
-      const card = cards[position.row][position.column]
-      const item = document.createElement("li")
-      item.title = this.t("Messages.object-enemy")
-      const cardElement = document.createElement("span")
-      cardElement.classList.add("card", "btn", "card--disabled", `card--enemy-${card.object?.enemy?.player}`, "card--object")
-      cardElement.appendChild(createObject(card.object!))
-      item.appendChild(cardElement)
-      this.objectsElement.appendChild(item)
     }
 
     // Update enemy placement rows

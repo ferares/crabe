@@ -9,7 +9,6 @@ export class GameHeader extends HTMLElement {
   private freedElement: HTMLElement
   private shrimpsElement: HTMLElement
   private EnemiesElement: HTMLElement
-  private ObjectsElement: HTMLElement
   private t = useTranslations(window.Astro.currentLocale)
 
   constructor() {
@@ -18,20 +17,14 @@ export class GameHeader extends HTMLElement {
     this.freedElement = this.querySelector("[data-js=freed]")!
     this.shrimpsElement = this.querySelector("[data-js=shrimps]")!
     this.EnemiesElement = this.querySelector("[data-js=enemies]")!
-    this.ObjectsElement = this.querySelector("[data-js=objects]")!
   }
 
   update = (board: PlayerBoard) => {
-    const { cards, turn, gameState, character, forbiddenObjects, freedCount, shrimpCount, enemyCount } = board
-    const forbiddenObjectsIcons = forbiddenObjects.map((position) => {
-      const card = cards[position.row][position.column]
-      return card.object?.icon
-    })
+    const { cards, turn, gameState, character, freedCount, shrimpCount, enemyCount } = board
     this.titleElement.textContent = this.generateTitle(turn, character, gameState)
     this.freedElement.textContent = freedCount.toString()
     this.shrimpsElement.textContent = shrimpCount.toString()
     this.EnemiesElement.textContent = enemyCount.toString()
-    this.ObjectsElement.textContent = `${forbiddenObjectsIcons[0]} ${forbiddenObjectsIcons[1]}`
   }
 
   private generateTitle = (turn: Player, character: Player, gameState: GameState) => {
