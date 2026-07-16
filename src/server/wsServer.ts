@@ -7,7 +7,7 @@ import type { Message, Response, Update } from "../types/GameServer"
 import { generateCode } from "../helpers/strings"
 import { drawEnemy, generateBoard, getPlayerBoardData, movePlayer, placeEnemy } from "../helpers/game"
 
-type Room = { code: string, board: Board, players: Map<Player, WebSocket>, new: boolean, timeout?: NodeJS.Timeout }
+type Room = { code: string, board: Board, players: Map<Player, WebSocket>, new: boolean, restarting: boolean, timeout?: NodeJS.Timeout }
 
 const rooms: Record<string, Room> = {}
 
@@ -45,7 +45,7 @@ function createRoom() {
   while (rooms[code]) code = generateCode(10)
   const board = generateBoard()
   if (!board) return
-  const room: Room = { code, board, players: new Map(), new: true }
+  const room: Room = { code, board, players: new Map(), new: true, restarting: false }
   // Delete the room if room stays empty after timeout
   room.timeout = setTimeout(() => delete (rooms[code]), 60000)
   rooms[code] = room
@@ -53,8 +53,10 @@ function createRoom() {
 }
 
 function restartRoom(room: Room) {
+  if (room.restarting) return true
   const board = generateBoard()
   if (!board) return false
+  room.restarting = true
   room.board = board
   return true
 }
