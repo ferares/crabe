@@ -2,7 +2,7 @@ import { type RawData, type WebSocket } from "ws"
 
 import { type Board } from "../types/Board"
 import { type Player } from "../types/Player"
-import type { Message, Response } from "../types/GameServer"
+import type { Message, Response, Update } from "../types/GameServer"
 
 import { generateCode } from "../helpers/strings"
 import { drawEnemy, generateBoard, getPlayerBoardData, movePlayer, placeEnemy } from "../helpers/game"
@@ -80,15 +80,15 @@ function leaveRoom(ws: WebSocket) {
     room.timeout = setTimeout(() => delete (rooms[room.code]), 60000)
   } else {
     // Notify the other player that their partner has left
-    broadCastBoardUpdate(room)
+    broadCastBoardUpdate(room, { type: "status" })
   }
 }
 
-function broadCastBoardUpdate(room: Room) {
+function broadCastBoardUpdate(room: Room, update: Update) {
   room.players.forEach((ws) => {
     const character = getPlayerChar(ws, room)
     if (!character) return
-    sendMessage(ws, { type: "update", board: getPlayerBoardData(character, room.players.size, room.new, room.board) })
+    sendMessage(ws, { type: "update", board: getPlayerBoardData(character, room.players.size, room.new, room.board), update })
   })
 }
 
@@ -116,7 +116,7 @@ function handleConnection(ws: WebSocket) {
       const room = getPlayerRoom(ws)
       if (room) {
         if (restartRoom(room)) {
-          broadCastBoardUpdate(room)
+          broadCastBoardUpdate(room, { type: "status" })
         } else {
           sendMessage(ws, { type: "error", code: 500, text: "Error resetting room" })
         }
@@ -141,11 +141,11 @@ function handleConnection(ws: WebSocket) {
             if (!board) return sendMessage(ws, { type: "error", code: 500, text: "Error adding player to room" })
             const playerChar = getPlayerChar(ws, room)
             if (!playerChar) return sendMessage(ws, { type: "error", code: 500, text: "Error setting player character" })
-            sendMessage(ws, { type: "join", board: getPlayerBoardData(playerChar, room.players.size, room.new, board) })
+            sendMessage(ws, { type: "join", board: getPlayerBoardData(playerChar, room.players.size, room.new, board), update: { type: "status" } })
             // if there was a player already in the room update them so the game can start
             if (barco) sendMessage(barco, { type: "start" })
             // Broadcast the join to all players
-            broadCastBoardUpdate(room)
+            broadCastBoardUpdate(room, { type: "status" })
           }
         }
       } else {
@@ -157,7 +157,7 @@ function handleConnection(ws: WebSocket) {
       if ((room) && (row !== undefined) && (column !== undefined)) {
         if (isPlayerTurn(ws, room)) {
           movePlayer(row, column, room.board)
-          broadCastBoardUpdate(room)
+          broadCastBoardUpdate(room, { type: "move", row, column })
         }
       }
     } else if (msg.action === "place") {
@@ -165,8 +165,8 @@ function handleConnection(ws: WebSocket) {
       const room = getPlayerRoom(ws)
       if ((room) && (row !== undefined) && (column !== undefined)) {
         if (isPlayerTurn(ws, room)) {
-          placeEnemy(row, column, room.board)
-          broadCastBoardUpdate(room)
+          const enemy = placeEnemy(row, column, room.board)
+          broadCastBoardUpdate(room, { type: "place", row, column, enemy })
         }
       }
     } else if (msg.action === "draw") {
@@ -174,7 +174,7 @@ function handleConnection(ws: WebSocket) {
       if (room) {
         if (isPlayerTurn(ws, room)) {
           drawEnemy(room.board)
-          broadCastBoardUpdate(room)
+          broadCastBoardUpdate(room, { type: "status" })
         }
       }
     }

@@ -7,6 +7,7 @@ import { Players } from "../../../helpers/Players"
 import { Card } from "../../../helpers/Card"
 
 import type { Modal } from "../Modal/Modal"
+import type { Update } from "../../../types/GameServer"
 
 export class GameBoard extends HTMLElement {
   private currentBoard?: PlayerBoard
@@ -51,9 +52,8 @@ export class GameBoard extends HTMLElement {
     this.restartButton.removeEventListener("click", this.handleRestart)
   }
 
-  update = async (board: PlayerBoard) => {
+  update = async (board: PlayerBoard, update: Update) => {
     const { cards, turn, gameState, character, currentEnemy, shrimpCount, forbiddenObjects } = board
-    const boardCards = this.cards.flat()
 
     // Update board
     this.boardElement.classList.toggle("board--draw", gameState === "draw")
@@ -62,13 +62,12 @@ export class GameBoard extends HTMLElement {
     // Update players
     await this.players.update(this.cards, board, this.currentBoard)
 
-    // Update cards
-    // TODO: This double loop is wastefull
-    for (const rows of this.cards) {
-      for (const card of rows) {
-        await card.animateEnemy(cards[card.position.row][card.position.column], this.currentBoard?.cards[card.position.row][card.position.column])
-      }
+    // Animate enemy placement if that took place
+    if (update.type === "place") {
+      await this.cards[update.row][update.column].animateEnemy(update.enemy)
     }
+
+    // Update cards
     for (const rows of this.cards) {
       for (const card of rows) {
         card.update(board)

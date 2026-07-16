@@ -3,6 +3,7 @@ import type { Position } from "../types/Position"
 import type { Card as CardData } from "../types/Card"
 
 import { animate, createEnemy, createObject } from "./game"
+import type { Enemy } from "../types/Enemy"
 
 type Handlers = {
   placeEnemy: (row: number, column: number) => void,
@@ -63,16 +64,18 @@ export class Card {
     this.element.parentElement?.appendChild(players)
   }
 
-  animateEnemy = async (cardData: CardData, previousCardData?: CardData) => {
-    if (previousCardData && cardData.enemy && !previousCardData.enemy) {
-      const enemy = createEnemy(cardData.enemy)
-      this.element.textContent = ""
-      this.element.appendChild(enemy)
-      return Promise.all([
-        animate(enemy, [{ opacity: 0 }, { opacity: 1 }], { duration: 1000, easing: "ease-in-out" }),
-        animate(this.element, [{ backgroundColor: 'var(--color-card)' }, { backgroundColor: 'var(--color-danger)' }], { duration: 1000, easing: "ease-in-out" }),
-      ])
-    }
+  animateEnemy = async (enemy?: Enemy) => {
+    if (!enemy) return
+    const enemyElement = createEnemy(enemy)
+    this.element.textContent = ""
+    this.element.appendChild(enemyElement)
+    this.element.classList.remove("card--enemy-barco")
+    this.element.classList.remove("card--enemy-sol")
+    this.element.classList.add(`card--enemy-${enemy.player}`)
+    return Promise.all([
+      animate(enemyElement, [{ opacity: 0 }, { opacity: 1 }], { duration: 1000, easing: "ease-in-out" }),
+      animate(this.element, [{ backgroundColor: "var(--color-card)" }, { backgroundColor: "var(--color-danger)" }], { duration: 1000, easing: "ease-in-out" }),
+    ])
   }
 
   private generateClickHandler = (board: PlayerBoard, row: number, column: number, card: CardData) => {

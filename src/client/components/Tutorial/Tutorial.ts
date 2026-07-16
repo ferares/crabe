@@ -7,6 +7,7 @@ import { drawEnemy, enemyIcons, getPlayerBoardData, getTutorialBoard, movePlayer
 import type { GameBoard } from "../GameBoard/GameBoard";
 import type { GameHeader } from "../GameHeader/GameHeader";
 import type { Modal } from "../Modal/Modal";
+import type { Update } from "../../../types/GameServer";
 
 export class Tutorial extends HTMLElement {
   private boardElement: GameBoard
@@ -37,10 +38,10 @@ export class Tutorial extends HTMLElement {
     this.boardElement.addEventListener("crabe:game:draw", this.handleDraw)
     this.boardElement.addEventListener("crabe:game:enemy", this.handlePlaceEnemy)
     this.boardElement.addEventListener("crabe:game:move", this.handleMovePlayers)
-    this.boardElement.update(getPlayerBoardData("barco", 2, false, this.board))
+    this.boardElement.update(getPlayerBoardData("barco", 2, false, this.board), { type: "status" })
     this.modalButton.addEventListener("click", () => this.nextStep())
     this.cardButton.addEventListener("click", () => this.nextStep())
-    this.boardElement.update(getPlayerBoardData("barco", 2, false, this.board))
+    this.boardElement.update(getPlayerBoardData("barco", 2, false, this.board), { type: "status" })
     this.header.update(getPlayerBoardData("barco", 2, false, this.board))
     this.nextStep()
   }
@@ -97,11 +98,13 @@ export class Tutorial extends HTMLElement {
       this.cardTitle.textContent = this.t("Pages.Tutorial.t8")
       this.cardContent.innerHTML = this.t("Pages.Tutorial.m8")
       drawEnemy(this.board)
-      await this.render()
+      await this.render({ type: "status" })
     } else if (this.step === 8) {
       this.card.classList.remove("show")
-      placeEnemy(4, 0, this.board)
-      await this.render()
+      const row = 4
+      const column = 0
+      placeEnemy(row, column, this.board)
+      await this.render({ type: "place", row, column })
       this.card.classList.add("show")
       this.card.setAttribute("data-step", this.step.toString())
       this.cardTitle.textContent = this.t("Pages.Tutorial.t9")
@@ -109,8 +112,10 @@ export class Tutorial extends HTMLElement {
     } else if (this.step === 9) {
       this.card.classList.remove("show")
       this.cardButton.classList.add("hide")
-      movePlayer(0, 5, this.board)
-      await this.render()
+      const row = 0
+      const column = 5
+      movePlayer(row, column, this.board)
+      await this.render({ type: "move", row, column })
       this.nextStep()
     } else if (this.step === 10) {
       this.card.setAttribute("data-step", this.step.toString())
@@ -139,7 +144,7 @@ export class Tutorial extends HTMLElement {
     const { row, column } = event.detail
     if (this.step !== 3) return
     placeEnemy(row, column, this.board)
-    await this.render()
+    await this.render({ type: "place", row, column })
     this.nextStep()
   }
 
@@ -147,19 +152,19 @@ export class Tutorial extends HTMLElement {
     const { row, column } = event.detail
     if ((this.step !== 5) || (row !== 0) || (column !== 0)) return
     movePlayer(0, 0, this.board)
-    await this.render()
+    await this.render({ type: "move", row, column })
     this.nextStep()
   }
 
   private handleDraw = async () => {
     if (this.step !== 2) return
     drawEnemy(this.board)
-    await this.render()
+    await this.render({ type: "status" })
     this.nextStep()
   }
 
-  private render = async () => {
-    await this.boardElement.update(getPlayerBoardData("barco", 2, false, this.board))
+  private render = async (update: Update) => {
+    await this.boardElement.update(getPlayerBoardData("barco", 2, false, this.board), update)
     this.header.update(getPlayerBoardData("barco", 2, false, this.board))
   }
 }

@@ -49,7 +49,7 @@ export class Game extends HTMLElement {
 
   private handleMessage = async (response: Response) => {
     if (response.type === "join" || response.type === "update") {
-      await this.board.update(response.board)
+      await this.board.update(response.board, response.update)
       this.header.update(response.board)
       this.shareGameModal.toggle(response.board.new)
       if (!response.board.new && response.board.connectedPlayers < 2) {

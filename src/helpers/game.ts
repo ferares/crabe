@@ -212,15 +212,17 @@ export function drawEnemy(board: Board) {
 }
 
 export function placeEnemy(row: number, column: number, board: Board) {
-  if (!board.currentEnemy) return
+  const enemy = board.currentEnemy
+  if (!enemy) return
   const targetCard = board.cards[row]?.[column]
   if (!targetCard) return
-  targetCard.enemy = { isLobster: board.currentEnemy.isLobster, player: board.turn, row }
+  targetCard.enemy = { isLobster: enemy.isLobster, player: board.turn, row }
   if ((board.playersPos.row === row) && (board.playersPos.column === column)) {
     eatShrimp(1, board)
   }
   board.currentEnemy = undefined
   updateGameState("move", board)
+  return enemy
 }
 
 export function movePlayer(row: number, column: number, board: Board) {
